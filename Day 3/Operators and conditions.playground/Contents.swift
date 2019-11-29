@@ -28,7 +28,7 @@ let beatles = firstHalf + secondHalf
 //Conditions
 
 let age1 = 12
-let age2 = 21
+let age2 = 23
 
 if age1 > 18 && age2 > 18 {
     print("Both are over 18")
