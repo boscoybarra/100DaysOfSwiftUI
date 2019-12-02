@@ -242,4 +242,114 @@ bakeCookies(number: 5) {
 //}
 
 
+//Shorthand parameter names
+
+func travelShort(action: (String) -> String) {
+    print("I'm getting ready to go.")
+    let description = action("London")
+    print(description)
+    print("I arrived!")
+}
+
+travelShort { (place: String) -> String in
+    return "I'm going to \(place) in my car"
+}
+
+//However, Swift knows the parameter to that closure must be a string, so we can remove it:
+travelShort { place -> String in
+    return "I'm going to \(place) in my car"
+}
+
+//It also knows the closure must return a string, so we can remove that:
+travelShort { place in
+    return "I'm going to \(place) in my car"
+}
+
+//As the closure only has one line of code that must be the one that returns the value, so Swift lets us remove the return keyword too:
+travelShort { place in
+    "I'm going to \(place) in my car"
+}
+
+//Swift has a shorthand syntax that lets you go even shorter. Rather than writing place in we can let Swift provide automatic names for the closure’s parameters. These are named with a dollar sign, then a number counting from 0.
+travelShort {
+    "I'm going to \($0) in my car"
+}
+
+//Shorthand parameters are written as $0, $1 and so on.
+//When using shorthand parameters you don't list the parameters you accept.
+
+
+
+//Closures with multiple parameters
+
+func travelShortTwoParameters(action: (String, Int) -> String) {
+    print("I'm getting ready to go.")
+    let description = action("London", 60)
+    print(description)
+    print("I arrived!")
+}
+
+travelShortTwoParameters {
+    "I'm going to \($0) at \($1) miles per hour."
+}
+
+//Returning closures from functions
+
+func travel() -> (String) -> Void {
+    return {
+        print("I'm going to \($0)")
+    }
+}
+
+//We can now call travel() to get back that closure, then call it as a function:
+
+let result = travel()
+result("London")
+
+//It’s technically allowable – although really not recommended! – to call the return value from travel() directly:
+let result2 = travel()("London")
+
+//Capturing values
+func travelCaptureValue() -> (String) -> Void {
+    return {
+        print("I'm going to \($0)")
+    }
+}
+
+//We can call travel() to get back the closure, then call that closure freely:
+
+let resultCaptureValue = travelCaptureValue()
+resultCaptureValue("London")
+
+//Closure capturing happens if we create values in travel() that get used inside the closure. For example, we might want to track how often the returned closure is called:
+
+func travelCaptureValues() -> (String) -> Void {
+    var counter = 1
+
+    return {
+        print("\(counter). I'm going to \($0)")
+        counter += 1
+    }
+}
+
+let resultCaptureValues = travelCaptureValues()
+resultCaptureValues("London")
+
+resultCaptureValues("London")
+resultCaptureValues("London")
+resultCaptureValues("London")
+
+//You’ve made it to the end of the sixth part of this series, so let’s summarize:
+
+//1. You can assign closures to variables, then call them later on.
+//2. Closures can accept parameters and return values, like regular functions.
+//3. You can pass closures into functions as parameters, and those closures can have parameters of their own and a return value.
+//4. If the last parameter to your function is a closure, you can use trailing closure syntax.
+//5. Swift automatically provides shorthand parameter names like $0 and $1, but not everyone uses them.
+//6. If you use external values inside your closures, they will be captured so the closure can refer to them later.
+
+
+
+
+
 
