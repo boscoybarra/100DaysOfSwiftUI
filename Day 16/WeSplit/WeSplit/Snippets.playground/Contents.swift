@@ -49,3 +49,10 @@ struct ContentView: View {
 //        }
     }
 }
+
+
+func tipCalculator(people: Int, tipPercentage: Int, totalAmount:Int) -> Int {
+    var totalAmountPerPerson = people / totalAmount
+    var totalAmountPerPersonWithTip = totalAmountPerPerson * (1+tipPercentage)
+    return totalAmountPerPersonWithTip
+}
