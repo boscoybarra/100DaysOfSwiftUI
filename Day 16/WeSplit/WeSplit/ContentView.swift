@@ -3,13 +3,13 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var checkAmount = ""
-    @State private var numberOfPeople = 2
+    @State private var numberOfPeople = "2"
     @State private var tipPercentage = 2
     
     let tipPercentages = [10, 15, 20, 25, 0]
     
     var totalPerPerson: Double {
-        let peopleCount = Double(numberOfPeople + 2)
+        let peopleCount = Double(Int(numberOfPeople) ?? 1)
         let tipSelection = Double(tipPercentages[tipPercentage])
 //      we use the nil coalescing operator, ??, to ensure there’s always a valid value.
         let orderAmount = Double(checkAmount) ?? 0
@@ -21,18 +21,29 @@ struct ContentView: View {
         return amountPerPerson
     }
     
+    var totalCheck: Double {
+        let tipSelection = Double(tipPercentages[tipPercentage])
+//      we use the nil coalescing operator, ??, to ensure there’s always a valid value.
+        let orderAmount = Double(checkAmount) ?? 0
+        let tipValue = orderAmount / 100 * tipSelection
+        return orderAmount + tipValue
+        
+    }
+    
     var body: some View {
         NavigationView {
             Form {
-                Section {
+                Section(header: Text("Total amount to pay")) {
                     TextField("Amount", text: $checkAmount)
                         .keyboardType(.decimalPad)
-                    
-                    Picker("Number of people", selection: $numberOfPeople) {
-                        ForEach(2 ..< 100) {
-                            Text("\($0) people")
-                        }
-                    }
+                } .navigationBarTitle("How many do WeSplit?")
+                
+                Section(header: Text("How many people to split?")) {
+                    TextField("Number of people", text: $numberOfPeople) {
+//                     ForEach(2 ..< 100) {
+//                        Text("\($0) people")
+//                      }
+                    } .keyboardType(.numberPad)
                 }
                 
                 Section(header: Text("How much tip do you want to leave?")) {
@@ -43,8 +54,12 @@ struct ContentView: View {
                     }.pickerStyle(SegmentedPickerStyle())
                 }
                 
-                Section {
+                Section(header: Text("Amount per person")) {
                     Text("$\(totalPerPerson, specifier: "%.2f")")
+                }
+                
+                Section(header: Text("Total amount for the check + tip")) {
+                    Text("$\(totalCheck, specifier: "%.2f")")
                 }
             }
         .navigationBarTitle("WeSplit")
