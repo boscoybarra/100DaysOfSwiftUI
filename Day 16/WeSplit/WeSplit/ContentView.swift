@@ -36,7 +36,7 @@ struct ContentView: View {
                 Section(header: Text("Total amount to pay")) {
                     TextField("Amount", text: $checkAmount)
                         .keyboardType(.decimalPad)
-                } .navigationBarTitle("How many do WeSplit?")
+                } .navigationBarTitle("WeSplit!")
                 
                 Section(header: Text("How many people to split?")) {
                     TextField("Number of people", text: $numberOfPeople) {
@@ -55,11 +55,11 @@ struct ContentView: View {
                 }
                 
                 Section(header: Text("Amount per person")) {
-                    Text("$\(totalPerPerson, specifier: "%.2f")")
+                    Text("\(totalPerPerson, specifier: "%.2f") €")
                 }
                 
                 Section(header: Text("Total amount for the check + tip")) {
-                    Text("$\(totalCheck, specifier: "%.2f")")
+                    Text("\(totalCheck, specifier: "%.2f") €")
                 }
             }
         .navigationBarTitle("WeSplit")
