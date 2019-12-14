@@ -11,57 +11,85 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var inputAmount = ""
-    @State private var unit = 2
+    @State private var fromUnit = 2
+    @State private var toUnit = 1
     
-    let units = ["seconds", "minutes", "hours", "days", "weeks"]
+    let fromUnits = ["seconds", "minutes", "hours"]
+    let toUnits = ["seconds", "minutes", "hours"]
     let unitsInSeconds = [1.0, 60.0, 3600.0, 86400.0, 60480.0]
     
     var totalAmount: Double {
         let amountToConvert = Double(Int(inputAmount) ?? 0)
-        let amountToDivide = Double(Int(unitsInSeconds[unit]))
+        let amountToMultiply = Double(Int(unitsInSeconds[fromUnit]))
         
-        let amountInSeconds = amountToSeconds(unit: unit, amountToConvert: amountToConvert, amountToDivide: amountToDivide)
+        let amountInSeconds = amountToSeconds(unit: fromUnit, amountToConvert: amountToConvert, amountToMultiply: amountToMultiply)
         
-        let finalAmount = amountInSeconds
+        //Using Apple's measurement instance
         
-        return finalAmount
+        let measurementInSecond = Measurement(value: amountInSeconds, unit: UnitDuration.seconds)
+        let desiredUnit = converToUnit(value: self.toUnits[toUnit], measurementInSecond: measurementInSecond)
+        
+        return desiredUnit.value
     }
     
-    func amountToSeconds(unit:Int, amountToConvert:Double, amountToDivide:Double) -> Double {
+    func amountToSeconds(unit:Int, amountToConvert:Double, amountToMultiply:Double) -> Double {
         switch unit {
         case 0:
             return amountToConvert
         case 1:
-            return amountToConvert * amountToDivide
+            return amountToConvert * amountToMultiply
+        case 2:
+            return amountToConvert * amountToMultiply
         case 3:
-            return amountToConvert * amountToDivide
+            return amountToConvert * amountToMultiply
         case 4:
-            return amountToConvert * amountToDivide
+            return amountToConvert * amountToMultiply
         default:
             return 0.0
         }
     }
+    
+    func converToUnit(value:String, measurementInSecond: Measurement<UnitDuration>) -> Measurement<UnitDuration> {
+        switch value {
+        case "hours":
+            return measurementInSecond.converted(to: .hours)
+        case "minutes":
+            return measurementInSecond.converted(to: .minutes)
+        case "seconds":
+            return measurementInSecond.converted(to: .seconds)
+        default:
+            return measurementInSecond.converted(to: .nanoseconds)
+            
+        }
+    }
+    
+    
     
     var body: some View {
         NavigationView {
             
             Form {
                 
-                Section(header: Text("Ex. Type your age")) {
-                    TextField("Enter amount to convert", text: $inputAmount)
+                Section(header: Text("Amount")) {
+                    TextField("Enter \(fromUnits[fromUnit])", text: $inputAmount)
+                        Picker("Convert from", selection: $fromUnit) {
+                            ForEach(0..<fromUnits.count) {
+                                Text("\(self.fromUnits[$0])")
+                            }
+                        }.pickerStyle(SegmentedPickerStyle())
                 }
                 
                 Section(header: Text("Select the convertion unit")) {
-                    Picker("Convert to", selection: $unit) {
-                        ForEach(0..<units.count) {
-                            Text("\(self.units[$0])")
+                    Picker("Convert to", selection: $toUnit) {
+                        ForEach(0..<toUnits.count) {
+                            Text("\(self.toUnits[$0])")
                         }
                     }.pickerStyle(SegmentedPickerStyle())
                 } .navigationBarTitle("Time Convertor")
                 
                 
                 Section(header: Text("Total")) {
-                    Text("\(totalAmount, specifier: "%.2f") in \(units[unit])")
+                    Text("\(totalAmount, specifier: "%.f") \(toUnits[toUnit])")
                 }
                     
             }
