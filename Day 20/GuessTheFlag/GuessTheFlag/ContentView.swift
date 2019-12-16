@@ -14,6 +14,7 @@ struct ContentView: View {
     
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    @State private var storeScore = 0
 
     var body: some View {
         
@@ -43,14 +44,27 @@ struct ContentView: View {
                         .overlay(Capsule().stroke(Color.black, lineWidth: 1))
                         .shadow(color: .black, radius: 2)
                     }
+                    
+                }
+                
+                VStack(alignment: .center, spacing: 30) {
+                    Text("""
+                        Score: \(self.storeScore)
+                        """)
+                        .foregroundColor(.white)
+                        .font(.largeTitle)
+                        .fontWeight(.black)
+                        
                 }
                 
                 Spacer()
+                
+                
             }
         }
         
     .alert(isPresented: $showingScore) {
-        Alert(title: Text(scoreTitle), message: Text("Your score is ???"), dismissButton: .default(Text("Continue")) {
+        Alert(title: Text(scoreTitle), message: Text("Your score is \(storeScore)"), dismissButton: .default(Text("Continue")) {
             self.askQuestion()
         })
     }
@@ -59,8 +73,10 @@ struct ContentView: View {
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
+            storeScore += 1
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Ups! This is the flag of \(countries[number])"
+            storeScore -= 1
         }
 
         showingScore = true
@@ -70,6 +86,7 @@ struct ContentView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
+    
     
     
 }
