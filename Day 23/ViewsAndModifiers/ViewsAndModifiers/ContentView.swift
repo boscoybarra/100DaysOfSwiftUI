@@ -20,13 +20,52 @@ struct CapsuleText: View {
             .clipShape(Capsule())
     }
 }
+
+struct Watermark: ViewModifier {
+    var text: String
+
+    func body(content: Content) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            content
+            Text(text)
+                .font(.caption)
+                .foregroundColor(.white)
+                .padding(5)
+                .background(Color.black)
+        }
+    }
+}
+
+struct BigTitles: ViewModifier {
+    var text: String
+    func body(content: Content) -> some View {
+        Text(text)
+                .font(.largeTitle)
+                .foregroundColor(.blue)
+    }
+}
+
+extension View {
+    func bigTitles(with text: String) -> some View {
+        self.modifier(BigTitles(text: text))
+    }
+}
+
 struct ContentView: View {
     var body: some View {
-        VStack(spacing: 10) {
-            CapsuleText(text: "First")
-                .foregroundColor(.white)
-            CapsuleText(text: "Second")
-                .foregroundColor(.pink)
+        VStack {
+            
+            bigTitles(with: "Hello world!")
+            
+            VStack(spacing: 10) {
+                CapsuleText(text: "First")
+                    .foregroundColor(.white)
+                CapsuleText(text: "Second")
+                    .foregroundColor(.pink)
+                
+             Spacer()
+                
+            }
         }
     }
 }
