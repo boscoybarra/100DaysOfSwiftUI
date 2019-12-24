@@ -18,14 +18,9 @@ struct ContentView: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 30) {
+
             ForEach(self.emojiMoves, id: \.self ) {
-                Button($0) {
-                   if "🗿" == $0 {
-
-                   }
-                   else {
-
-                   }
+                Button($0 == "🗿" ? "🗿" : $0 == "🧻" ? "🧻" : "✂️") {
                 }
                 .font(.system(size: 60))
                 .clipShape(Rectangle())

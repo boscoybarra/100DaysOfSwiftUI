@@ -16,63 +16,47 @@ struct ContentView: View {
     @State private var wakeUp = defaultWakeTime
     @State private var coffeeAmount = 1
     
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showingAlert = false
     
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Sunrise 🌞")) {
-                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-                        .datePickerStyle(WheelDatePickerStyle())
-                }
-                
-                Section(header: Text("Sleep 😴")) {
-                    Text("Desired amount of sleep")
-                        .font(.headline)
-                        Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
-                            Text("\(sleepAmount, specifier: "%g") hours")
-                    }
-                }
-                
-                Section(header: Text("Caffeine ☕️")) {
-                    Text("Daily coffee intake")
-                        .font(.headline)
-                    Picker(selection: $coffeeAmount, label: Text("Cups")) {
-                        ForEach(0 ..< 21, id: \.self) {
-                            Text("\($0) cup\($0 == 1 ? "" : "s")")
+            VStack(spacing: 30) {
+                    Form {
+                        Section(header: Text("Sunrise 🌞")) {
+                            DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                                .labelsHidden()
+                                .datePickerStyle(WheelDatePickerStyle())
                         }
-                        } .labelsHidden()
-                        .pickerStyle(WheelPickerStyle())
-                    
-                    Stepper(value: $coffeeAmount, in: 1...20) {
-                        if coffeeAmount == 1 {
-                            Text("1 cup")
-                        } else {
-                            Text("\(coffeeAmount) cups")
+                        
+                        Section(header: Text("Sleep 😴")) {
+                            Text("Desired amount of sleep")
+                                .font(.headline)
+                                Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
+                                    Text("\(sleepAmount, specifier: "%g") hours")
+                            }
+                        }
+                        
+                        Section(header: Text("Caffeine ☕️")) {
+                            Text("Daily coffee intake")
+                                .font(.headline)
+                            Picker(selection: $coffeeAmount, label: Text("Cups")) {
+                                ForEach(0 ..< 21, id: \.self) {
+                                    Text("\($0) cup\($0 == 1 ? "" : "s")")
+                                }
+                                } .labelsHidden()
+                                .pickerStyle(WheelPickerStyle())
                         }
                     }
-                }
-            }
-            .navigationBarTitle("BetterRest")
-//            .navigationBarItems(trailing:
-//                Button(action: calculateBedtime) {
-            
+
                     Text("Your ideal 🛌 is")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     
                     Text(calculateBedtime())
                         .font(.largeTitle)
-//                }
-//            )§
-            .alert(isPresented: $showingAlert) {
-                Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                }
+                .navigationBarTitle("BetterRest")
             }
         }
-    }
     
 // If you try compiling that code you’ll see it fails, and the reason is that we’re accessing one property from inside another – Swift doesn’t know which order the properties will be created in, so this isn’t allowed.
 
@@ -94,6 +78,7 @@ struct ContentView: View {
         let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
         let hour = (components.hour ?? 0) * 60 * 60
         let minute = (components.minute ?? 0) * 60
+        let bedTime: String
         
         do {
             let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
@@ -103,18 +88,16 @@ struct ContentView: View {
             let formatter = DateFormatter()
             formatter.timeStyle = .short
 
-            alertMessage = formatter.string(from: sleepTime)
-            alertTitle = "Your ideal bedtime is…"
+            bedTime = formatter.string(from: sleepTime)
+//            $alertTitle = "Your ideal bedtime is…"
             
         } catch {
             // something went wrong!
-            alertTitle = "Error"
-            alertMessage = "Sorry, there was a problem calculating your bedtime."
+//            $alertTitle = "Error"
+            bedTime = "Sorry, there was a problem calculating your bedtime."
         }
         
-        showingAlert = true
-        
-        return alertMessage
+        return bedTime
     }
 }
         
