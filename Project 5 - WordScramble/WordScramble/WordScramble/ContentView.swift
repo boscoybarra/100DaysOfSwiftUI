@@ -23,24 +23,39 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 30) {
 //                 because the closure’s signature – the parameters it needs to accept and its return type – exactly matches the addNewWord() method we just wrote, we can pass that in directly onCommit:
+//
+//                To read when return is pressed for a text view we should add an onCommit() modifier.
                 TextField("Enter your word", text: $newWord, onCommit: addNewWord)
 
                 List(usedWords, id: \.self) {
                     Image(systemName: "\($0.count).circle")
                     Text($0)
                 }
+//   Add Score
+//                Text("Score for")
+//                .font(.caption)
+//                .foregroundColor(.secondary)
+//
+//                Text(self.score())
+//                    .font(.largeTitle)
+                
             }
-            .navigationBarTitle(rootWord)
+//            We can use onAppear() to run a closure when a view is shown.
             .onAppear(perform: startGame)
             .alert(isPresented: $showingError) {
                 Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
+            .navigationBarTitle(rootWord)
+            .navigationBarItems(leading: Button(action: startGame) {
+                Text("New Game")
+            })
         }
         .textFieldStyle(RoundedBorderTextFieldStyle())
         .autocapitalization(.none)
         .padding()
+        
     }
     
     func addNewWord() {
@@ -65,9 +80,11 @@ struct ContentView: View {
         }
 
         guard isReal(word: answer) else {
-            wordError(title: "Word not possible", message: "That isn't a real word.")
+            wordError(title: "Word not possible", message: "That isn't a real word, the word is shorter that three characters or the same word as given!")
             return
         }
+        
+        
 
         usedWords.insert(answer, at: 0)
         newWord = ""
@@ -112,17 +129,25 @@ struct ContentView: View {
     }
     
     func isReal(word: String) -> Bool {
-        let checker = UITextChecker()
-        let range = NSRange(location: 0, length: word.utf16.count)
-        let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+        if word.count > 3 && word != self.rootWord {
+            let checker = UITextChecker()
+            let range = NSRange(location: 0, length: word.utf16.count)
+            let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
 
-        return misspelledRange.location == NSNotFound
+            return misspelledRange.location == NSNotFound
+        } else {
+            return false
+        }
     }
     
     func wordError(title: String, message: String) {
         errorTitle = title
         errorMessage = message
         showingError = true
+    }
+    
+    func score() {
+        
     }
 }
 struct ContentView_Previews: PreviewProvider {
