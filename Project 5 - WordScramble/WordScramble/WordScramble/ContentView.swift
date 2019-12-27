@@ -9,12 +9,14 @@
 import SwiftUI
 
 struct ContentView: View {
-//    we need an array of words they have already used
+    //we need an array of words they have already used
     @State private var usedWords = [String]()
-//    a root word for them to spell other words from
+    //a root word for them to spell other words from
     @State private var rootWord = ""
-//    string we can bind to a text field
+    //string we can bind to a text field
     @State private var newWord = ""
+    //count the total words
+    @State private var countWords = 0
     
     @State private var errorTitle = ""
     @State private var errorMessage = ""
@@ -24,25 +26,24 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
-//                 because the closure’s signature – the parameters it needs to accept and its return type – exactly matches the addNewWord() method we just wrote, we can pass that in directly onCommit:
-//
-//                To read when return is pressed for a text view we should add an onCommit() modifier.
-                TextField("Enter your word", text: $newWord, onCommit: addNewWord)
+                
+//Because the closure’s signature – the parameters it needs to accept and its return type – exactly matches the addNewWord() method we just wrote, we can pass that in directly onCommit:
 
+//To read when return is pressed for a text view we should add an onCommit() modifier.
+                TextField("Enter your word", text: $newWord, onCommit: addNewWord)
                 List(usedWords, id: \.self) {
                     Image(systemName: "\($0.count).circle")
                     Text($0)
                 }
-//   Add Score
-//                Text("Score for")
-//                .font(.caption)
-//                .foregroundColor(.secondary)
-//
-//                Text(self.score())
-//                    .font(.largeTitle)
+                
+                Text("Total Score")
+                .font(.system(size: 20.0))
+                
+                Text("\(self.countWords)")
+                    .font(.largeTitle)
                 
             }
-//            We can use onAppear() to run a closure when a view is shown.
+            // We can use onAppear() to run a closure when a view is shown.
             .onAppear(perform: startGame)
             .alert(isPresented: $showingError) {
                 Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
@@ -84,6 +85,11 @@ struct ContentView: View {
             return
         }
         
+        guard score(word: answer) else {
+            wordError(title: "No possible addition", message: "It was not possible to make any addition")
+            return
+        }
+        
         
 
         usedWords.insert(answer, at: 0)
@@ -101,7 +107,9 @@ struct ContentView: View {
                 // 4. Pick one random word, or use "silkworm" as a sensible default
                 rootWord = allWords.randomElement() ?? "silkworm"
 
-                // If we are here everything has worked, so we can exit
+                // If we are here everything has worked, so we can exit and set counter to 0
+                
+                self.countWords = 0
                 return
             }
         }
@@ -146,10 +154,18 @@ struct ContentView: View {
         showingError = true
     }
     
-    func score() {
+    func score(word: String) -> Bool {
+        if word.count > 0 {
+            let count = word.count
+            countWords += count
+            return true
+        } else {
+            return false
+        }
         
     }
 }
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
