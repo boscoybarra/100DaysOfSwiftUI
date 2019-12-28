@@ -129,3 +129,176 @@ struct ContentView: View {
         .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1, z: 0))
     }
 }
+
+//
+
+Button("Tap Me") {
+    self.enabled.toggle()
+}
+.frame(width: 200, height: 200)
+.background(enabled ? Color.blue : Color.red)
+.animation(.default)
+.foregroundColor(.white)
+.clipShape(RoundedRectangle(cornerRadius: enabled ? 60 : 0))
+.animation(.interpolatingSpring(stiffness: 10, damping: 1))
+
+
+
+//
+
+Button("Tap Me") {
+    self.enabled.toggle()
+}
+.frame(width: 200, height: 200)
+.background(enabled ? Color.blue : Color.red)
+.animation(nil)
+.foregroundColor(.white)
+.clipShape(RoundedRectangle(cornerRadius: enabled ? 60 : 0))
+.animation(.interpolatingSpring(stiffness: 10, damping: 1))
+
+//
+
+
+struct ContentView: View {
+    @State private var dragAmount = CGSize.zero
+    
+    var body: some View {
+        LinearGradient(gradient: Gradient(colors: [.yellow, .red]), startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(width: 300, height: 200)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .offset(dragAmount)
+            .gesture(
+                DragGesture()
+                    .onChanged { self.dragAmount = $0.translation }
+//                    To see explicit animations in action, remove that animation() modifier and change your existing onEnded() drag gesture code to this:
+                    .onEnded { _ in
+                        withAnimation(.spring()) {
+                            self.dragAmount = .zero
+                        }
+                    }
+            )
+    }
+//    .animation(.spring())
+}
+
+
+
+
+
+
+
+//Now the card will follow your drag immediately (because that’s not being animated), but when you release it will animate.
+//
+//If we combine offset animations with drag gestures and a little delay, we can create remarkably fun animations without a lot of code.
+//
+//To demonstrate this, we could write the text “Hello SwiftUI” as a series of individual letters, each one with a background color and offset that is controlled by some state. Strings are just slightly fancy arrays of characters, so we can get a real array from a string like this: Array("Hello SwiftUI").
+//
+//Anyway, try this out and see what you think:
+
+
+
+struct ContentView: View {
+    let letters = Array("Hello SwiftUI")
+    @State private var enabled = false
+    @State private var dragAmount = CGSize.zero
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(0..<letters.count) { num in
+                Text(String(self.letters[num]))
+                    .padding(5)
+                    .font(.title)
+                    .background(self.enabled ? Color.blue : Color.red)
+                    .offset(self.dragAmount)
+                    .animation(Animation.default.delay(Double(num) / 20))
+            }
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { self.dragAmount = $0.translation }
+                .onEnded { _ in
+                    self.dragAmount = .zero
+                    self.enabled.toggle()
+                }
+        )
+    }
+}
+
+
+
+struct ContentView: View {
+    
+    @State private var isShowingRed = false
+    
+    var body: some View {
+        VStack {
+            Button("Tap Me") {
+                withAnimation {
+                    self.isShowingRed.toggle()
+                }
+            }
+            
+            if isShowingRed {
+                Rectangle()
+                    .fill(Color.red)
+                    .frame(width: 200, height: 200)
+//                    .transition(.scale)
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
+            }
+        }
+    }
+}
+
+//
+//
+// Custom transitions
+//
+//
+
+
+
+struct CornerRotateModifier: ViewModifier {
+    let amount: Double
+    let anchor: UnitPoint
+
+    func body(content: Content) -> some View {
+        content.rotationEffect(.degrees(amount), anchor: anchor).clipped()
+    }
+}
+
+//The addition of clipped() there means that when the view rotates the parts that are lying outside its natural rectangle don’t get drawn.
+
+//We can try that straight away using the .modifier transition, but it’s a little unwieldy. A better idea is to wrap that in an extension to AnyTransition, making it rotate from -90 to 0 on its top leading corner:
+
+extension AnyTransition {
+    static var pivot: AnyTransition {
+        .modifier(
+            active: CornerRotateModifier(amount: -90, anchor: .topLeading),
+            identity: CornerRotateModifier(amount: 0, anchor: .topLeading)
+        )
+    }
+}
+
+
+struct ContentView: View {
+    
+    @State private var isShowingRed = false
+    
+    var body: some View {
+        VStack {
+            Button("Tap Me") {
+                withAnimation {
+                    self.isShowingRed.toggle()
+                }
+            }
+            
+            if isShowingRed {
+                Rectangle()
+                    .fill(Color.red)
+                    .frame(width: 200, height: 200)
+// With that in place we now attach the pivot animation to any view using this:
+                    .transition(.pivot)
+            }
+        }
+    }
+}
