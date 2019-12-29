@@ -16,7 +16,7 @@ struct ContentView: View {
 //            withAnimation {
 //                self.animationAmount += 360
 //            }
-            withAnimation(.interpolatingSpring(stiffness: 5, damping: 1)) {
+            withAnimation(.interpolatingSpring(stiffness: 2, damping: 5)) {
                 self.animationAmount += 360
             }
         }

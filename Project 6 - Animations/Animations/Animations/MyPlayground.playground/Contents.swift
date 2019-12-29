@@ -12,6 +12,7 @@ struct ContentView: View {
         .padding(50)
         .background(Color.red)
         .foregroundColor(.white)
+//clipShape modifier lets us specify a shape for a view should to be drawn inside.
         .clipShape(Circle())
         .blur(radius: (animationAmount - 1) * 3)
         .animation(.default)
@@ -27,6 +28,7 @@ struct ContentView: View {
 
 
 //For more precise control, we can customize the animation with a duration specified as a number of seconds. So, we could get an ease-in-out animation that lasts for two seconds like this:
+//    You can specify partial seconds as 1.5 and similar.
 .animation(.easeInOut(duration: 2))
 
     
@@ -169,6 +171,7 @@ struct ContentView: View {
             .offset(dragAmount)
             .gesture(
                 DragGesture()
+//                        This lets us update our view state every time the user's finger moves, or when they end the gesture.
                     .onChanged { self.dragAmount = $0.translation }
 //                    To see explicit animations in action, remove that animation() modifier and change your existing onEnded() drag gesture code to this:
                     .onEnded { _ in
