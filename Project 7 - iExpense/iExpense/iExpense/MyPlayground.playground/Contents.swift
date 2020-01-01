@@ -130,3 +130,42 @@ struct ContentView: View {
 
     }
 }
+
+
+
+struct ContentView: View {
+    @State private var numbers = [Int]()
+    @State private var currentNumber = 1
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                List {
+                    ForEach(numbers, id: \.self) {
+                        Text("\($0)")
+                    }
+                    .onDelete(perform: removeRows)
+
+                }
+
+                Button("Add Number") {
+                    self.numbers.append(self.currentNumber)
+                    self.currentNumber += 1
+                }
+            }
+            .navigationBarItems(leading: EditButton())
+        }
+    }
+    
+    func removeRows(at offsets: IndexSet) {
+        numbers.remove(atOffsets: offsets)
+    }
+}
+
+
+
+//@Published publishes change announcements automatically.
+//@ObservedObject watches for those announcements and refreshes any views using the object.
+//sheet() watches a condition we specify and shows or hides a view automatically.
+//Codable can convert Swift objects into JSON and back with almost no code from us.
+//UserDefaults can read and write data so that we can save settings and more instantly.

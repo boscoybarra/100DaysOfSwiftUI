@@ -13,6 +13,7 @@
 		29FFD96523BBD47E00355C3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29FFD96423BBD47E00355C3C /* Assets.xcassets */; };
 		29FFD96823BBD47E00355C3C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29FFD96723BBD47E00355C3C /* Preview Assets.xcassets */; };
 		29FFD96B23BBD47E00355C3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29FFD96923BBD47E00355C3C /* LaunchScreen.storyboard */; };
+		29FFD97423BD21AD00355C3C /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FFD97323BD21AD00355C3C /* AddView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		29FFD96A23BBD47E00355C3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		29FFD96C23BBD47E00355C3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29FFD97223BBD7E100355C3C /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		29FFD97323BD21AD00355C3C /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 				29FFD95E23BBD47C00355C3C /* AppDelegate.swift */,
 				29FFD96023BBD47C00355C3C /* SceneDelegate.swift */,
 				29FFD96223BBD47C00355C3C /* ContentView.swift */,
+				29FFD97323BD21AD00355C3C /* AddView.swift */,
 				29FFD96423BBD47E00355C3C /* Assets.xcassets */,
 				29FFD96923BBD47E00355C3C /* LaunchScreen.storyboard */,
 				29FFD96C23BBD47E00355C3C /* Info.plist */,
@@ -148,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29FFD97423BD21AD00355C3C /* AddView.swift in Sources */,
 				29FFD95F23BBD47C00355C3C /* AppDelegate.swift in Sources */,
 				29FFD96123BBD47C00355C3C /* SceneDelegate.swift in Sources */,
 				29FFD96323BBD47C00355C3C /* ContentView.swift in Sources */,
