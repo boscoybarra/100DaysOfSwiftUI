@@ -169,3 +169,28 @@ struct ContentView: View {
 //sheet() watches a condition we specify and shows or hides a view automatically.
 //Codable can convert Swift objects into JSON and back with almost no code from us.
 //UserDefaults can read and write data so that we can save settings and more instantly.
+
+//Key Concepts to bear in mind:
+
+//@Published announces changes from a property; @ObservedObject watches an observed object for changes.
+
+
+//The onDelete() modifier exists only on ForEach.
+
+
+//If we use integer(forKey:) and UserDefaults can't find the key we asked for, it sends back nil.
+//We actually get back 0 if the key doesn't exist, so make sure you can distinguish 0 the default value from 0 being a value you set.
+
+
+//The Identifiable protocol has no requirements.
+//This protocol has only one requirement: a property called id that should be unique.
+
+
+//EditButton() will automatically switch between Edit and Done when tapped.
+//It will also toggle editing mode on any lists that are loaded.
+
+//IndexSet is a sorted set of integers.
+//It's used for deleting views from a ForEach view, amongst other things.
+
+//UserDefaults can store integers, strings, Booleans, and more.
+//Their values are automatically loaded when our app starts, so try not to save too much.

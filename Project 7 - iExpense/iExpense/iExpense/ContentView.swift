@@ -10,6 +10,7 @@ import SwiftUI
 
 //All we’ve done is add Identifiable to the list of protocol conformances, nothing more. This is one of the protocols built into Swift, and means “this type can be identified uniquely.” It has only one requirement, which is that there must be a property called id that contains a unique identifier. We just added that, so we don’t need to do any extra work – our type conforms to Identifiable just fine.
 
+
 struct ExpenseItem: Identifiable, Codable {
 //  In this instance we’re going to ask Swift to generate a UUID automatically for us
     let id = UUID()
@@ -55,6 +56,7 @@ struct ContentView: View {
     
     @ObservedObject var expenses = Expenses()
     @State private var showingAddExpense = false
+    @State private var showingAlert = false
 
     var body: some View {
         NavigationView {
@@ -73,23 +75,30 @@ struct ContentView: View {
                         
                         Spacer()
                         Text("\(item.amount)€")
+                            .foregroundColor(item.amount <= 10 ? .green : item.amount < 100 ? .orange : .red)
+
                     }
                 }
                 .onDelete(perform: removeItems)
             }
+            
             .navigationBarTitle("iExpense")
-            .navigationBarItems(trailing:
-                Button(action: {
-                    self.showingAddExpense = true
-                }) {
-//                   Inside the Button
-                    Image(systemName: "plus")
-                }
-            )
             .sheet(isPresented: $showingAddExpense) {
                 AddView(expenses: self.expenses)
             }
+            .navigationBarItems(leading: EditButton(), trailing:
+                            Button(action: {
+                                self.showingAddExpense = true
+                            }) {
+            //                   Inside the Button
+                                Image(systemName: "plus")
+                            }
+                        )
         }
+//        .alert(isPresented: $showingScore) {
+//            Alert(title: Text(scoreTitle), message: Text("Your score is \(storeScore)"), dismissButton: .default(Text("Continue")) {
+//            })
+//        }
     }
     
     
