@@ -56,7 +56,6 @@ struct ContentView: View {
     
     @ObservedObject var expenses = Expenses()
     @State private var showingAddExpense = false
-    @State private var showingAlert = false
 
     var body: some View {
         NavigationView {
@@ -95,10 +94,6 @@ struct ContentView: View {
                             }
                         )
         }
-//        .alert(isPresented: $showingScore) {
-//            Alert(title: Text(scoreTitle), message: Text("Your score is \(storeScore)"), dismissButton: .default(Text("Continue")) {
-//            })
-//        }
     }
     
     

@@ -23,6 +23,8 @@ struct AddView: View {
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = ""
+    
+    @State private var showAlert = false
 
     static let types = ["Business", "Personal"]
 
@@ -44,10 +46,18 @@ struct AddView: View {
                     let item = ExpenseItem(name: self.name, type: self.type, amount: actualAmount)
                     self.expenses.items.append(item)
                     self.presentationMode.wrappedValue.dismiss()
+                } else {
+                    self.showAlert = true
                 }
             })
         }
+        .alert(isPresented: $showAlert) {
+        Alert(title: Text("Incorrect input"), message: Text("Your input \(self.amount) is not an number, please enter a correct value"), dismissButton: .default(Text("Continue")) {
+            })
+        }
     }
+    
+    
 }
 struct AddView_Previews: PreviewProvider {
     static var previews: some View {
