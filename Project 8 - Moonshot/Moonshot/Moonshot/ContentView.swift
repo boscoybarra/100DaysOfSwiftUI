@@ -25,7 +25,9 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text(mission.displayName)
                             .font(.headline)
-                        Text(mission.launchDate ?? "N/A")
+//                        We change the format so that we have the user get the date in the format we wish from our JSON data
+//                        Text(mission.launchDate ?? "N/A")
+                        Text(mission.formattedLaunchDate)
                     }
                 }
             }
