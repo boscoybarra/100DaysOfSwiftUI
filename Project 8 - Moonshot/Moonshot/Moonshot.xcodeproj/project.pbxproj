@@ -18,6 +18,7 @@
 		296DC8AF23BF8071007442D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296DC8AE23BF8071007442D1 /* Assets.xcassets */; };
 		296DC8B223BF8071007442D1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296DC8B123BF8071007442D1 /* Preview Assets.xcassets */; };
 		296DC8B523BF8072007442D1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 296DC8B323BF8072007442D1 /* LaunchScreen.storyboard */; };
+		69C7A4AA23C2A9CD00E33228 /* MissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C7A4A923C2A9CD00E33228 /* MissionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		296DC8B423BF8072007442D1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		296DC8B623BF8072007442D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		296DC8BC23BF824A007442D1 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		69C7A4A923C2A9CD00E33228 /* MissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				296DC8A823BF8070007442D1 /* AppDelegate.swift */,
 				296DC8AA23BF8070007442D1 /* SceneDelegate.swift */,
 				296DC8AC23BF8070007442D1 /* ContentView.swift */,
+				69C7A4A923C2A9CD00E33228 /* MissionView.swift */,
 				2931BEA423C144790026FE27 /* Mission.swift */,
 				296DC8AE23BF8071007442D1 /* Assets.xcassets */,
 				2931BEA023C141F70026FE27 /* Astronaut.swift */,
@@ -165,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69C7A4AA23C2A9CD00E33228 /* MissionView.swift in Sources */,
 				2931BEA523C144790026FE27 /* Mission.swift in Sources */,
 				296DC8A923BF8070007442D1 /* AppDelegate.swift in Sources */,
 				2931BEA323C142930026FE27 /* Bundle-Decodable.swift in Sources */,
