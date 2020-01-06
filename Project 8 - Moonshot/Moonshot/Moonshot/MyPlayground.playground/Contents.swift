@@ -159,3 +159,17 @@ struct ContentView: View {
 //There’s no limit to the number of levels Codable will go through – all that matters is that the structs you define match your JSON string.
 //
 //That brings us to the end of the overview for this project, so please go ahead and reset ContentView.swift to its original state.
+
+
+//dateFormat allows us to specify a precise format for our dates, whereas dateStyle has a selection of built-in formats that match the user's settings.
+
+//Generics let us write code that can use a variety of different types.
+//They add a lot of flexibility, but usually it's best to write a method for a single type first.
+
+//A nested struct is one that is placed inside another struct.
+//They are useful for letting us control how types are made available elsewhere in our code.
+
+//If Codable sees an optional property, it will only try to unarchive it if it exists in the source data.
+//This lets us handle missing data gracefully.
+
+
