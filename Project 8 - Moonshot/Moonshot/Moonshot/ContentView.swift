@@ -9,9 +9,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    struct CrewMember {
+        let role: String
+        let astronaut: Astronaut
+    }
+
     
     let astronauts: [Astronaut] = Bundle.main.decode("astronauts.json")
     let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    let crewAstronauts: [CrewMember]
+    
+//    let missions: [Mission]
+    
     
     var body: some View {
         NavigationView {
@@ -34,9 +44,26 @@ struct ContentView: View {
             .navigationBarTitle("Moonshot")
         }
     }
+    
+    init(missions: [Mission], astronauts: [Astronaut], crewAstronauts: [CrewMember] {
+        
+        var matches = [CrewMember]()
+
+        for member in mission.crew {
+            if let match = astronauts.first(where: { $0.id == member.name }) {
+                matches.append(CrewMember(role: member.role, astronaut: match))
+            } else {
+                fatalError("Missing \(member)")
+            }
+        }
+
+        self.astronauts = matches
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
+    static let missions: [Mission] = Bundle.main.decode("missions.json")
+    
     static var previews: some View {
         ContentView()
     }
