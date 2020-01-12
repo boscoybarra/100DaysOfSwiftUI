@@ -9,9 +9,17 @@
 import SwiftUI
 
 
-struct Questions {
-    let question: String
-    let answer: Int
+struct Question: Identifiable {
+    let id = UUID()
+    let value: Int
+    let multiplyBy: Int
+    var answer: Int {
+        return value * multiplyBy
+    }
+    
+    var title: String {
+        return "\(value) x \(multiplyBy) = ?"
+    }
 }
 
 struct ContentView: View {
@@ -19,8 +27,9 @@ struct ContentView: View {
     @State private var multiplicationTable = 1
     @State private var defaultAmountOfQuestions = 0
     @State private var answer = ""
+    @State private var currentQuestion = 1
     
-    let numberOfQuestions = [5, 10, 20, 35]
+    let numberOfQuestions = ["5", "10", "20", "All"]
     
     var body: some View {
         NavigationView {
@@ -58,16 +67,16 @@ struct ContentView: View {
                 
                
             } // We can use onAppear() to run a closure when a view is shown.
-            .onAppear(perform: startGame)
+//            .onAppear(perform: startGame)
         .navigationBarTitle("Fun Multiplier")
         }
     }
     
-    func startGame() -> Questions {
-        ForEach(0 ..< defaultAmountOfQuestions) {
-            Questions(question: "\($multiplicationTable) x \($0)", answer: $0 * multiplicationTable)
-        }
-    }
+//    func startGame() -> Questions {
+//        ForEach(0 ..< defaultAmountOfQuestions) {
+//            Questions(question: "\($multiplicationTable) x \($0)", answer: $0 * multiplicationTable)
+//        }
+//    }
 }
 
 struct ContentView_Previews: PreviewProvider {

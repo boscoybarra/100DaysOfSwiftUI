@@ -23,7 +23,10 @@ struct ContentView: View {
 //    let missions: [Mission]
     
     
+    @State private var showLaunchdate = true
+    
     var body: some View {
+        
         NavigationView {
             List(missions) { mission in
                 NavigationLink(destination: MissionView(mission: mission, missions: self.missions, astronauts: self.astronauts)) {
@@ -35,32 +38,26 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text(mission.displayName)
                             .font(.headline)
-//                        We change the format so that we have the user get the date in the format we wish from our JSON data
-//                        Text(mission.launchDate ?? "N/A")
-                        Text(mission.formattedLaunchDate)
+//We change the format so that we have the user get the date in the format we wish from our JSON data
+                        Text(self.showLaunchdate ? mission.formattedLaunchDate : self.crewMission(mission))
                     }
                 }
             }
             .navigationBarTitle("Moonshot")
+            .navigationBarItems(trailing:
+                Button(self.showLaunchdate ? "Show Launchdate" : "Show Crew Names") {
+                    self.showLaunchdate.toggle()
+            })
         }
+        
     }
     
-//    init(missions: [Mission], astronauts: [Astronaut], crewAstronauts: [CrewMember] {
-//
-//        var matches = [CrewMember]()
-//
-//        for member in mission.crew {
-//            if let match = astronauts.first(where: { $0.id == member.name }) {
-//                matches.append(CrewMember(role: member.role, astronaut: match))
-//            } else {
-//                fatalError("Missing \(member)")
-//            }
-//        }
-//
-//        self.astronauts = matches
-//    }
-}
+    func crewMission(_ mission: Mission) -> String {
+        return mission.crew.map { $0.name }.joined(separator: ", ")
+    }
 
+}
+    
 struct ContentView_Previews: PreviewProvider {
 //    static let missions: [Mission] = Bundle.main.decode("missions.json")
     
