@@ -569,3 +569,39 @@ struct ContentView: View {
         }
     }
 }
+
+
+// Insights
+
+//Shapes must be able to create a path.
+//This is the only requirement of the Shape protocol: to be able to create a path in a rectangle.
+
+
+//We can adjust the color saturation of any view in real-time.
+//    There's a dedicated modifier for it, with an easy-to-remember name: saturation()
+
+
+// The InsettableShape protocol builds on the Shape protocol.
+
+
+//stroke() draws a line around a path that is half-way inside the line and half-way outside.
+//You should use strokeBorder() if you want the stroke to be entirely within your shape.
+
+
+//ImagePaint lets us tile an image as a fill or border.
+//It has parameters that let us customize how much of the image is used and at what size.
+
+
+//CGAffineTransform can be used to store rotation and translation data.
+//It can also store shearing and scaling.
+
+//We can use CGFloat and Double interchangeably.
+//Even though they are the same thing on many of Apple's devices, Swift does not let us use CGFloat and Double interchangeably.
+
+//AnimatablePair lets us animate any two kinds of data.
+//AnimatablePair can only animate values that are animatable, which excludes integers.
+
+//SwiftUI uses Core Animation for rendering by default.
+//This is the same rendering system used by Apple's original iOS framework, UIKit.
+
+
