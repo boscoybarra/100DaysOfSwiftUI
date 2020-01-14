@@ -89,7 +89,7 @@ struct ContentView: View {
                             Button(action: {
                                 self.showingAddExpense = true
                             }) {
-            //                   Inside the Button
+            //Inside the Button
                                 Image(systemName: "plus")
                             }
                         )
