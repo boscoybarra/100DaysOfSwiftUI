@@ -9,7 +9,9 @@
 import SwiftUI
 
 struct AddView: View {
-    @ObservedObject var myHabits: Habits
+    
+    @ObservedObject var habits: Habits
+
     @Environment(\.presentationMode) var presentationMode
     
     @State private var name = ""
@@ -32,11 +34,11 @@ struct AddView: View {
                 TextField("Amount", text: $amount)
                     .keyboardType(.numberPad)
             }
-            .navigationBarTitle("Add new expense")
+            .navigationBarTitle("Add new habit")
             .navigationBarItems(trailing: Button("Save") {
                 if let actualAmount = Int(self.amount) {
                     let item = HabitItem(name: self.name, type: self.type, amount: actualAmount)
-                    self.myHabits.habits.append(item)
+                    self.habits.items.append(item)
                     self.presentationMode.wrappedValue.dismiss()
                 } else {
                     self.showAlert = true
@@ -48,10 +50,11 @@ struct AddView: View {
             })
         }
     }
+    
+    
 }
-
 struct AddView_Previews: PreviewProvider {
     static var previews: some View {
-        AddView(myHabits: Habits())
+        AddView(habits: Habits())
     }
 }
