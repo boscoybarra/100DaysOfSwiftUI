@@ -10,33 +10,39 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
-    @FetchRequest(entity: Student.entity(), sortDescriptors: []) var students: FetchedResults<Student>
+
+//   That gives us a managed object context we can pass into AddBookView, a fetch request reading all the books we have (so we can test everything worked), and a Boolean that tracks whether the add screen is showing or not.
     @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: Book.entity(), sortDescriptors: []) var books: FetchedResults<Book>
+
+    @State private var showingAddScreen = false
     
         var body: some View {
-            VStack {
+             NavigationView {
                 List {
-                    ForEach(students, id: \.id) { student in
-                        Text(student.name ?? "Unknown")
+                    ForEach(books, id: \.self) { book in
+                        NavigationLink(destination: Text(book.title ?? "Unknown Title")) {
+                            EmojiRatingView(rating: book.rating)
+                                .font(.largeTitle)
+
+                            VStack(alignment: .leading) {
+                                Text(book.title ?? "Unknown Title")
+                                    .font(.headline)
+                                Text(book.author ?? "Unknown Author")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                 }
-                
-                Button("Add") {
-                    let firstNames = ["Ginny", "Harry", "Hermione", "Luna", "Ron"]
-                    let lastNames = ["Granger", "Lovegood", "Potter", "Weasley"]
-
-                    let chosenFirstName = firstNames.randomElement()!
-                    let chosenLastName = lastNames.randomElement()!
-
-                    let student = Student(context: self.moc)
-                    student.id = UUID()
-                    student.name = "\(chosenFirstName) \(chosenLastName)"
-                    
-//  Finally we need to ask our managed object context to save itself. This is a throwing function call, because in theory it might fail. In practice, nothing about what we’ve done has any chance of failing, so we can call this using try? – we don’t care about catching errors.
-                    
-                    try? self.moc.save()
-                }
+                    .navigationBarTitle("Bookworm")
+                    .navigationBarItems(trailing: Button(action: {
+                        self.showingAddScreen.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                    })
+                    .sheet(isPresented: $showingAddScreen) {
+                        AddBookView().environment(\.managedObjectContext, self.moc)
+                    }
             }
         }
     }

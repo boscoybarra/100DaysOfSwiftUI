@@ -146,3 +146,12 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
     
+// KEY
+
+//However, this time there’s a small piece of bonus work and it stems from the way SwiftUI’s environment works. You see, when we place an object into the environment for a view, it becomes accessible to that view and any views that can call it an ancestor. So, if we have View A that contains inside it View B, anything in the environment for View A will also be in the environment for View B. Taking this a step further, if View A happens to be a NavigationView, any views that are pushed onto the navigation stack have that NavigationView as their ancestor so they share the same environment.
+//
+//Now think about sheets – those are full-screen pop up windows on iOS. Yes, one screen might have caused them to appear, but does that mean the presented view can call the original its ancestor? SwiftUI has an answer, and it’s “no”, which means that when we present a new view as a sheet we need to explicitly pass in a managed object context for it to use. As the new AddBookView will be shown as a sheet from ContentView, we need to add a managed object context property to ContentView so it can be passed in.
+
+// KEY 2
+
+// You’ve already seen how we use the @Environment property wrapper to read values from the environment, but here we need to write values in the environment. This is done using a modifier of the same name, environment(), which takes two parameters: a key to write to, and the value you want to send in. For the key we can just send in the one we’ve been using all along, \.managedObjectContext, and for the value we can pass in our own moc property – we’re effectively 
