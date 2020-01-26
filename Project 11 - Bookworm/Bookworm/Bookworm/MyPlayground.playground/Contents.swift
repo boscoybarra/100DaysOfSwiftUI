@@ -155,3 +155,55 @@ struct ContentView_Previews: PreviewProvider {
 // KEY 2
 
 // You’ve already seen how we use the @Environment property wrapper to read values from the environment, but here we need to write values in the environment. This is done using a modifier of the same name, environment(), which takes two parameters: a key to write to, and the value you want to send in. For the key we can just send in the one we’ve been using all along, \.managedObjectContext, and for the value we can pass in our own moc property – we’re effectively 
+
+
+
+// Key Review:
+
+//We can use @Environment only once per view.
+//It's a regular property wrapper, so you can use it as many times as you need.
+
+//Type erasure lets us hide the underlying type of an object.
+//SwiftUI gives us AnyView for this specific purpose.
+
+//There are three size classes: large, regular, and compact.
+//There are only two size classes: regular and compact.
+
+//The .destructive alert button style should be used whenever the user might destroy some data.
+//iOS marks destructive options in red, to make the dangerous behavior clear to users.
+
+// If we have a managed object call book, we should call book.delete() to remove it from its managed object context.
+//We should call the delete() method on a managed object context instead.
+
+//onDelete(perform:) cannot be attached directly to a List view.
+//We must attach onDelete(perform:) to a ForEach view instead.
+
+//Integer 16 is designed to hold 16 different numbers.
+//Integer 16 holds one 16-bit number.
+
+//We must always provide a sort field for Core Data fetch requests.
+//You can specify no sorting if you want; just use an empty array.
+
+// AnyView conforms to View.
+//This means we can use it anywhere we would use buttons, sliders, and more.
+
+//We can't use onDelete(perform:) with views backed by Core Data objects.
+//onDelete(perform:) doesn't care what data it works with, so it works fine with Core Data.
+
+//We can create a testing managed object context for the purpose of SwiftUI previews.
+//All we need to do is provide a concurrency type, such as main queue concurrency.
+
+//Core Data can store up to 1000 entities of the same type.
+//Core Data has effectively no limit on the number of objects we store.
+
+//Views presented as sheets automatically share the same environment as the view that presented them.
+//Views presented as sheets have their own environment, so if you want to share values you need to pass them in.
+
+//When using the Core Data template, Xcode provides a managed object context for us.
+//It also provides a persistent container, which means we're free to go ahead and start creating objects.
+
+//Managed objects must be created inside a managed object context.
+//This allows Core Data to save and delete them correctly.
+
+//Managed object contexts automatically save themselves.
+//We need to save our contexts manually by calling their save() method.
