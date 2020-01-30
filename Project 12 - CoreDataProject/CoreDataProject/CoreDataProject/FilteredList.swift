@@ -25,8 +25,29 @@ struct FilteredList<T: NSManagedObject, Content: View>: View {
         }
     }
 
-    init(filterKey: String, filterValue: String, @ViewBuilder content: @escaping (T) -> Content) {
-        fetchRequest = FetchRequest<T>(entity: T.entity(), sortDescriptors: [], predicate: NSPredicate(format: "%K BEGINSWITH %@", filterKey, filterValue))
+    init(filterKey: String, filterValue: String, filterType: FilterType ,@ViewBuilder content: @escaping (T) -> Content) {
+        
+//      Make it accept an array of NSSortDescriptor objects to get used in its fetch request.
+        let sortDescriptor = NSSortDescriptor(key: filterKey, ascending: true)
+        
+//      Implementation by:
+        //  Created by Chris on 20/11/2019.
+        //  Copyright © 2019 Earlswood Marketiing Ltd. All rights reserved.
+        
+        var predicate: NSPredicate?
+               
+               switch filterType {
+               case .equals:
+                   predicate = (filterValue != "" ? NSPredicate(format: "%K == %@", filterKey, filterValue) : nil)
+               case .lessThan:
+                   predicate = (filterValue != "" ? NSPredicate(format: "%K < %@", filterKey, filterValue) : nil)
+               case .beginsWith:
+                   predicate = (filterValue != "" ? NSPredicate(format: "%K BEGINSWITH %@", filterKey, filterValue) : nil)
+               case .not:
+                   predicate = (filterValue != "" ? NSPredicate(format: "NOT %K == %@", filterKey, filterValue) : nil)
+               }
+        
+        fetchRequest = FetchRequest<T>(entity: T.entity(), sortDescriptors: [sortDescriptor], predicate: predicate)
         self.content = content
     }
 }

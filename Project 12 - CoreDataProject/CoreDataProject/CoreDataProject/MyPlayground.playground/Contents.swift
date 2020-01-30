@@ -207,4 +207,63 @@
 
 //One-to-many relationships with Core Data, SwiftUI, and @FetchRequest
 
+//If all the properties of a type conform to the Hashable protocol, the type itself can also conform just by adding Hashable to its list of conformances.
+//This works just the same as Codable.
 
+//We can't combine generics with NSManagedObject.
+//Generics and NSManagedObject work great together.
+
+
+
+//We can filter a fetch request using NSPredicate.
+//If you want more complex predicates you can combine multiple instances of NSPredicate using NSCompoundPredicate.
+
+//We can filter a fetch request using NSSortDescriptor.
+//Filtering a fetch request is done using NSPredicate.
+
+//It's always a good idea to wrap Core Data's optional strings with optional strings of our own.
+//This wouldn't be helpful. If you want to wrap the optionals, wrap them in non-optionals.
+
+//NSSet is the Objective-C version of Swift's Set type.
+//We need to convert the NSSet to something more useful before we can use it with SwiftUI.
+
+//
+//IMPORTANT
+//
+
+//We can dynamically replace an NSPredicate string with an attribute name using %K.
+//This must always be used rather than %@, otherwise Core Data will insert quote marks too.
+
+//%@ in an NSPredicate is dynamically replaced with a sort order.
+//%@ is dynamically replaced with some sort of value in quote marks; sorting is controlled through NSSortDescriptor.
+
+//NSManagedObject subclasses automatically conform to the Hashable protocol.
+//This allows us to use array of managed objects with ForEach.
+
+//FALSE:
+//We can specify multiple entities inside a fetch request.
+//Fetch requests work on single entities.
+
+//All managed objects have a unique object ID.
+//This works more or less like a UUID.
+
+//We should check whether a managed object context has changes before we try to save it.
+//This is as simple as reading its hasChanges property.
+
+//We can specify multiple sort descriptors inside a fetch request.
+//Fetch requests take an array of sort descriptors, and they are applied in order.
+
+//IMPORTANT:
+//Core Data's constraints let us ensure that an attribute is unique.
+//We can add as many constraints as we want by separating them using commas.
+
+//The BEGINSWITH predicate is case-sensitive. CONTAINS is also case-sensitive
+//We can create fetch requests without the property wrapper using the FetchRequest struct.
+
+
+NSPredicate(format: "'lastName' BEGINSWITH 'S'")
+//And that’s not correct: the attribute name should not be in quote marks.
+
+//To resolve this, NSPredicate has a special symbol that can be used to replace attribute names: %K, for “key”. This will insert values we provide, but won’t add quote marks around them. The correct predicate is this:
+
+NSPredicate(format: "%K BEGINSWITH %@", filterKey, filterValue)

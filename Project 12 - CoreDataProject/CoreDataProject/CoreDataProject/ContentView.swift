@@ -8,14 +8,23 @@
 
 import SwiftUI
 
+enum FilterType: String, CaseIterable {
+    case equals = "=="
+    case lessThan = "<"
+    case beginsWith = "BEGINSWITH"
+    case not = "NOT"
+}
+
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @State private var lastNameFilter = "A"
+    @State private var filterType = FilterType.equals
 
     var body: some View {
         VStack {
 //           This will work with generics
-            FilteredList(filterKey: "lastName", filterValue: lastNameFilter) { (singer: Singer) in
+            FilteredList(filterKey: "lastName", filterValue: lastNameFilter, filterType: filterType) { (singer: Singer) in
                 Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
 //            This workds with the Singer class only
@@ -43,6 +52,12 @@ struct ContentView: View {
 
             Button("Show S") {
                 self.lastNameFilter = "S"
+            }
+            
+            Picker("Predicate type", selection: $filterType) {
+                ForEach(FilterType.allCases, id: \.self) { item in
+                    Text(item.rawValue)
+                }
             }
         }
     }
