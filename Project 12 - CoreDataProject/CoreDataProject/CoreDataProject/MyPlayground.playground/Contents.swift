@@ -267,3 +267,19 @@ NSPredicate(format: "'lastName' BEGINSWITH 'S'")
 //To resolve this, NSPredicate has a special symbol that can be used to replace attribute names: %K, for “key”. This will insert values we provide, but won’t add quote marks around them. The correct predicate is this:
 
 NSPredicate(format: "%K BEGINSWITH %@", filterKey, filterValue)
+
+
+//Here’s a quick recap of all the new things we covered in the last three projects:
+//
+//Building custom Codable conformance
+//Sending and receiving data using URLSession
+//The disabled() modifier for views
+//Building custom UI components using @Bindable
+//Using AnyView for type erasure
+//Adding multiple buttons to an alert
+//How Swift’s Hashable protocol is used in SwiftUI
+//Using the @FetchRequest property wrapper to query Core Data
+//Sorting Core Data results using NSSortDescriptor
+//Creating custom NSManagedObject subclasses
+//Filtering data using NSPredicate
+//Creating relationships between Core Data entities
