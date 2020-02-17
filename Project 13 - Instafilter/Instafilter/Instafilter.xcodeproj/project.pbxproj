@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29B84E6823FACB3C00D5824E /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B84E6723FACB3C00D5824E /* ImagePicker.swift */; };
 		29DEA59923F9CB4E00903A37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DEA59823F9CB4E00903A37 /* AppDelegate.swift */; };
 		29DEA59B23F9CB4E00903A37 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DEA59A23F9CB4E00903A37 /* SceneDelegate.swift */; };
 		29DEA59D23F9CB4E00903A37 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DEA59C23F9CB4E00903A37 /* ContentView.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		29B84E6723FACB3C00D5824E /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		29DEA59523F9CB4E00903A37 /* Instafilter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instafilter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29DEA59823F9CB4E00903A37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		29DEA59A23F9CB4E00903A37 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 				29DEA59823F9CB4E00903A37 /* AppDelegate.swift */,
 				29DEA59A23F9CB4E00903A37 /* SceneDelegate.swift */,
 				29DEA59C23F9CB4E00903A37 /* ContentView.swift */,
+				29B84E6723FACB3C00D5824E /* ImagePicker.swift */,
 				696FD73223F9F44B00F03A62 /* MyPlayground.playground */,
 				29DEA59E23F9CB4F00903A37 /* Assets.xcassets */,
 				29DEA5A323F9CB4F00903A37 /* LaunchScreen.storyboard */,
@@ -149,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29DEA59923F9CB4E00903A37 /* AppDelegate.swift in Sources */,
+				29B84E6823FACB3C00D5824E /* ImagePicker.swift in Sources */,
 				29DEA59B23F9CB4E00903A37 /* SceneDelegate.swift in Sources */,
 				29DEA59D23F9CB4E00903A37 /* ContentView.swift in Sources */,
 			);

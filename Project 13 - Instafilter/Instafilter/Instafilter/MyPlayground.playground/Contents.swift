@@ -55,4 +55,81 @@ struct ContentView: View {
 
 //Showing multiple options with ActionSheet
 
+struct ContentView: View {
+    @State private var showingActionSheet = false
+    @State private var backgroundColor = Color.white
 
+    var body: some View {
+        Text("Hello, World!")
+            .frame(width: 300, height: 300)
+            .background(backgroundColor)
+            .onTapGesture {
+                self.showingActionSheet = true
+            }
+        .actionSheet(isPresented: $showingActionSheet) {
+            ActionSheet(title: Text("Change background"), message: Text("Select a new color"), buttons: [
+                .default(Text("Red")) { self.backgroundColor = .red },
+                .default(Text("Green")) { self.backgroundColor = .green },
+                .default(Text("Blue")) { self.backgroundColor = .blue },
+                .cancel()
+            ])
+        }
+    }
+}
+
+
+//Integrating Core Image with SwiftUI
+
+struct ContentView: View {
+    @State private var image: Image?
+
+    var body: some View {
+        VStack {
+            image?
+                .resizable()
+                .scaledToFit()
+        }
+        .onAppear(perform: loadImage)
+    }
+
+    func loadImage() {
+        guard let inputImage = UIImage(named: "Example") else { return }
+        let beginImage = CIImage(image: inputImage)
+
+        let context = CIContext()
+        let currentFilter = CIFilter.sepiaTone()
+        
+        currentFilter.inputImage = beginImage
+        currentFilter.intensity = 1
+        
+//        To demonstrate this, we could replace our sepia tone with a pixellation filter like this:
+//
+//        let currentFilter = CIFilter.pixellate()
+//        currentFilter.inputImage = beginImage
+//        currentFilter.scale = 100
+        
+//        let currentFilter = CIFilter.crystallize()
+//        currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+//        currentFilter.radius = 200
+        
+//        For example, here’s how we would use a twirl distortion:
+//
+//        guard let currentFilter = CIFilter(name: "CITwirlDistortion") else { return }
+//        currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
+//        currentFilter.setValue(2000, forKey: kCIInputRadiusKey)
+//        currentFilter.setValue(CIVector(x: inputImage.size.width / 2, y: inputImage.size.height / 2), forKey: kCIInputCenterKey)
+
+        
+        // get a CIImage from our filter or exit if that fails
+        guard let outputImage = currentFilter.outputImage else { return }
+
+        // attempt to get a CGImage from our CIImage
+        if let cgimg = context.createCGImage(outputImage, from: outputImage.extent) {
+            // convert that to a UIImage
+            let uiImage = UIImage(cgImage: cgimg)
+
+            // and convert that to a SwiftUI image
+            image = Image(uiImage: uiImage)
+        }
+    }
+}
