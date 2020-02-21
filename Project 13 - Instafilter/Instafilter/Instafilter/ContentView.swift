@@ -16,10 +16,13 @@ struct ContentView: View {
     @State private var image: Image?
     @State private var filterIntensity = 0.5
     
+    @State private var showingFilterSheet = false
     @State private var showingImagePicker = false
     @State private var inputImage: UIImage?
+    @State private var processedImage: UIImage?
     
-    @State private var currentFilter = CIFilter.sepiaTone()
+//   Adding that explicit type annotation means we’re throwing away some data: we’re saying that the filter must be a CIFilter but doesn’t have to conform to CISepiaTone any more.
+    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     let context = CIContext()
     
     var body: some View {
@@ -68,12 +71,24 @@ struct ContentView: View {
                 HStack {
                     Button("Change Filter") {
                         // change filter
+                        self.showingFilterSheet = true
                     }
 
                     Spacer()
 
                     Button("Save") {
-                        // save the picture
+                        guard let processedImage = self.processedImage else { return }
+
+                        let imageSaver = ImageSaver()
+
+                        imageSaver.successHandler = {
+                            print("Success!")
+                        }
+
+                        imageSaver.errorHandler = {
+                            print("Oops: \($0.localizedDescription)")
+                        }
+                        imageSaver.writeToPhotoAlbum(image: processedImage)
                     }
                 }
             }
@@ -81,6 +96,18 @@ struct ContentView: View {
             .navigationBarTitle("Instafilter")
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage)
+            }
+            .actionSheet(isPresented: $showingFilterSheet) {
+                ActionSheet(title: Text("Select a filter"), buttons: [
+                    .default(Text("Crystallize")) { self.setFilter(CIFilter.crystallize()) },
+                    .default(Text("Edges")) { self.setFilter(CIFilter.edges()) },
+                    .default(Text("Gaussian Blur")) { self.setFilter(CIFilter.gaussianBlur()) },
+                    .default(Text("Pixellate")) { self.setFilter(CIFilter.pixellate()) },
+                    .default(Text("Sepia Tone")) { self.setFilter(CIFilter.sepiaTone()) },
+                    .default(Text("Unsharp Mask")) { self.setFilter(CIFilter.unsharpMask()) },
+                    .default(Text("Vignette")) { self.setFilter(CIFilter.vignette()) },
+                    .cancel()
+                ])
             }
         }
     }
@@ -93,14 +120,26 @@ struct ContentView: View {
     }
     
     func applyProcessing() {
-        currentFilter.intensity = Float(filterIntensity)
+//By jettisoning the CISepiaTone restriction for our filter, we’re now forced to send values in using setValue(_:forKey:), which provides no safety at all. In this case, the Gaussian Blur filter doesn’t have an intensity value, so the app just crashes.
+
+//To fix this – and also to make our single slider do much more work – we’re going to add some more code that reads all the valid keys we can use with setValue(_:forKey:), and only sets the intensity key if it’s supported by the current filter. Using this approach we can actually query as many keys as we want, and set all the ones that are supported. So, for sepia tone this will set intensity, but for Gaussian blur it will set the radius (size of the blur), and so on.
+        let inputKeys = currentFilter.inputKeys
+        if inputKeys.contains(kCIInputIntensityKey) { currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey) }
+        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(filterIntensity * 200, forKey: kCIInputRadiusKey) }
+        if inputKeys.contains(kCIInputScaleKey) { currentFilter.setValue(filterIntensity * 10, forKey: kCIInputScaleKey) }
 
         guard let outputImage = currentFilter.outputImage else { return }
 
         if let cgimg = context.createCGImage(outputImage, from: outputImage.extent) {
             let uiImage = UIImage(cgImage: cgimg)
             image = Image(uiImage: uiImage)
+            processedImage = uiImage
         }
+    }
+    
+    func setFilter(_ filter: CIFilter) {
+        currentFilter = filter
+        loadImage()
     }
 }
     
