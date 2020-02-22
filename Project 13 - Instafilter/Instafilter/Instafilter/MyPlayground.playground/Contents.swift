@@ -299,3 +299,68 @@ struct ContentView: View {
     }
 }
 
+//Key Ideas Learned
+
+//The @objc attribute lets Objective-C code call a Swift method.
+//@objc tells Swift to create a method that can be read by Objective-C.
+
+// We can place optional views directly into a SwiftUI view hierarchy.
+//SwiftUI will only render them if they have a value.
+
+//When creating a custom Binding, we must specify both a get closure and a set closure.
+
+//Calling UIImageWriteToSavedPhotosAlbum() will fail if the user denied access to their photo library.
+
+//Action sheets can have a title and/or message.
+//Both should be text views.
+
+//We can ask the user to select a photo from their library using UIImagePickerController.
+//They can browse for whatever picture they want, or press Cancel.
+
+//We can detect when an @State property changes using a property observer.
+//This doesn't work; we need to use a custom binding instead.
+
+//To make a SwiftUI view wrap a UIKit view controller, we must make it conform to UIViewControllerRepresentable.
+//UIViewControllerRepresentable already conforms to View.
+
+//All Core Image filters do not take the same range of input keys.
+//They each take their own input keys, and trying to provide a key that isn't supported will cause a crash.
+
+//KEY KEY KEY
+
+//A coordinator class lets us handle communication back from a UIKit view controller.
+//Coordinators act as bridges between SwiftUI's views and UIKit's view controllers.
+
+//KEY KEY KEY
+
+//SwiftUI's views work great as @State properties.
+
+//Alerts and action sheets DO NOT look the same on iPhone.
+//Alerts appear in the center of the screen, whereas action sheets slide up from the bottom.
+
+//The @Binding property wrapper creates a Binding struct.
+//This is all that property wrappers do behind the scenes.
+
+//The Binding struct is generic.
+//This means we don't create bindings without further context, but instead say "this is a binding for a string".
+
+//Action sheets can have more buttons than alerts.
+//They take an array of buttons, and can even scroll if needed.
+
+//UIImage and CIImage are not the same.
+//They are both different from each other, and also from CGImage.
+
+//Core Image lets us apply graphical filters to an image.
+//It performs the transformation in the GPU, which is what makes it so fast on devices.
+
+// SwiftUI coordinators can act as delegates for another class.
+//SwiftUI coordinators are specifically designed to act as delegates for another class.
+
+//We attach code to run when an action sheet button is tapped by providing a closure.
+//This works just like buttons in alerts.
+
+//SwiftUI coordinator classes do not need to be nested inside a struct.
+//They don't need to be nested, it's just nice to have.
+
+//It's a good idea to create a CIContext once and re-use it.
+//Reusing your CIContext is important for performance.
