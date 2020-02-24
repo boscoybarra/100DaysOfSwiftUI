@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		692535BB240469CD00288E1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692535BA240469CD00288E1E /* MapView.swift */; };
 		69C7127C2402FBFE007B58F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C7127B2402FBFE007B58F2 /* AppDelegate.swift */; };
 		69C7127E2402FBFE007B58F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C7127D2402FBFE007B58F2 /* SceneDelegate.swift */; };
 		69C712812402FBFE007B58F2 /* BucketList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 69C7127F2402FBFE007B58F2 /* BucketList.xcdatamodeld */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		692535BA240469CD00288E1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		69C712782402FBFE007B58F2 /* BucketList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BucketList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69C7127B2402FBFE007B58F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		69C7127D2402FBFE007B58F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				69C7127B2402FBFE007B58F2 /* AppDelegate.swift */,
 				69C7127D2402FBFE007B58F2 /* SceneDelegate.swift */,
 				69C712822402FBFE007B58F2 /* ContentView.swift */,
+				692535BA240469CD00288E1E /* MapView.swift */,
 				69C712842402FC03007B58F2 /* Assets.xcassets */,
 				69C712892402FC03007B58F2 /* LaunchScreen.storyboard */,
 				69C712922402FF36007B58F2 /* MyPlayground.playground */,
@@ -153,6 +156,7 @@
 			files = (
 				69C7127C2402FBFE007B58F2 /* AppDelegate.swift in Sources */,
 				69C712812402FBFE007B58F2 /* BucketList.xcdatamodeld in Sources */,
+				692535BB240469CD00288E1E /* MapView.swift in Sources */,
 				69C712832402FBFE007B58F2 /* ContentView.swift in Sources */,
 				69C7127E2402FBFE007B58F2 /* SceneDelegate.swift in Sources */,
 			);

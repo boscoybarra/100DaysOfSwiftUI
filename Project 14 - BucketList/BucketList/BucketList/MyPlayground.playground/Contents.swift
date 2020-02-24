@@ -90,4 +90,152 @@ struct ContentView: View {
 
 //Switching view states with enums
 
+struct LoadingView: View {
+    var body: some View {
+        Text("Loading...")
+    }
+}
 
+struct SuccessView: View {
+    var body: some View {
+        Text("Success!")
+    }
+}
+
+struct FailedView: View {
+    var body: some View {
+        Text("Failed.")
+    }
+}
+
+struct ContentView: View {
+    
+    enum LoadingState {
+        case loading, success, failed
+    }
+    
+//    Those views could be nested if you want, but they don’t have to be – it really depends on whether you plan to use them elsewhere and the size of your app.
+
+//    With those two parts in place, we now effectively use ContentView as a simple wrapper that tracks the current app state and shows the relevant child view. That means giving it a property to store the current LoadingState value:
+    
+    var loadingState = LoadingState.loading
+    
+    var body: some View {
+        Group {
+            if loadingState == .loading {
+                LoadingView()
+            } else if loadingState == .success {
+                SuccessView()
+            } else if loadingState == .failed {
+                FailedView()
+            }
+        }
+    }
+}
+
+
+//Communicating with a MapKit coordinator
+
+struct ContentView: View {
+
+    var body: some View {
+        MapView()
+        .edgesIgnoringSafeArea(.all)
+    }
+}
+
+
+// On another file calles MapView.swift :
+
+import MapKit
+import SwiftUI
+
+//That creates a new typealias – a type name – called “Context”, and wherever Swift sees Context in code it will consider it the same as UIViewRepresentableContext<Self>, where Self is whatever type we’re working with. In practical terms, this means we can just write Context rather than UIViewRepresentableContext<MapView>, and they mean exactly the same thing.
+
+struct MapView: UIViewRepresentable {
+//  Just like working with UIImagePickerController, this means creating a nested class that inherits from NSObject, making it conform to whatever delegate protocol our view or view controller works with, and giving it a reference to the parent struct so it can pass data back up to SwiftUI.
+    class Coordinator: NSObject, MKMapViewDelegate {
+        var parent: MapView
+
+        init(_ parent: MapView) {
+            self.parent = parent
+        }
+        
+        func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
+            print(mapView.centerCoordinate)
+        }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
+            view.canShowCallout = true
+            return view
+        }
+    }
+    
+//  Just as with the UIViewControllerRepresentable protocol, that means adding a method called makeCoordinator() that sends back a configured instance of our Coordinator. This should be added to the MapView struct, and it will send itself to the coordinator so it can report back what’s happening.
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView()
+//  Remember, our coordinator is the delegate of the map view, which means when something interesting happens it gets notified – when the map moves, when it starts and finishes loading, when the user was located on the map, when a map pin was touched, and so on.
+        mapView.delegate = context.coordinator
+        let annotation = MKPointAnnotation()
+        annotation.title = "London"
+        annotation.subtitle = "Capital of England"
+        annotation.coordinate = CLLocationCoordinate2D(latitude: 51.5, longitude: 0.13)
+        mapView.addAnnotation(annotation)
+
+        return mapView
+    }
+
+    func updateUIView(_ view: MKMapView, context: Context) {
+    }
+}
+
+// Using Touch ID and Face ID with SwiftUI
+
+import LocalAuthentication
+import SwiftUI
+
+struct ContentView: View {
+    
+    @State private var isUnlocked = false
+
+    var body: some View {
+        VStack {
+            if self.isUnlocked {
+                Text("Unlocked")
+            } else {
+                Text("Locked")
+            }
+        }
+        .onAppear(perform: authenticate)
+    }
+    
+    func authenticate() {
+        let context = LAContext()
+        var error: NSError?
+
+        // check whether biometric authentication is possible
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            // it's possible, so go ahead and use it
+            let reason = "We need to unlock your data."
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                // authentication has now completed
+                DispatchQueue.main.async {
+                    if success {
+                        // authenticated successfully
+                        self.isUnlocked = true
+                    } else {
+                        // there was a problem
+                    }
+                }
+            }
+        } else {
+            // no biometrics
+        }
+    }
+}

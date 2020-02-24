@@ -6,47 +6,46 @@
 //  Copyright © 2020 Bosco Ybarra. All rights reserved.
 //
 
+import LocalAuthentication
 import SwiftUI
-
-struct LoadingView: View {
-    var body: some View {
-        Text("Loading...")
-    }
-}
-
-struct SuccessView: View {
-    var body: some View {
-        Text("Success!")
-    }
-}
-
-struct FailedView: View {
-    var body: some View {
-        Text("Failed.")
-    }
-}
 
 struct ContentView: View {
     
-    enum LoadingState {
-        case loading, success, failed
+    @State private var isUnlocked = false
+
+    var body: some View {
+        VStack {
+            if self.isUnlocked {
+                Text("Unlocked")
+            } else {
+                Text("Locked")
+            }
+        }
+        .onAppear(perform: authenticate)
     }
     
-//    Those views could be nested if you want, but they don’t have to be – it really depends on whether you plan to use them elsewhere and the size of your app.
+    func authenticate() {
+        let context = LAContext()
+        var error: NSError?
 
-//    With those two parts in place, we now effectively use ContentView as a simple wrapper that tracks the current app state and shows the relevant child view. That means giving it a property to store the current LoadingState value:
-    
-    var loadingState = LoadingState.loading
-    
-    var body: some View {
-        Group {
-            if loadingState == .loading {
-                LoadingView()
-            } else if loadingState == .success {
-                SuccessView()
-            } else if loadingState == .failed {
-                FailedView()
+        // check whether biometric authentication is possible
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            // it's possible, so go ahead and use it
+            let reason = "We need to unlock your data."
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                // authentication has now completed
+                DispatchQueue.main.async {
+                    if success {
+                        // authenticated successfully
+                        self.isUnlocked = true
+                    } else {
+                        // there was a problem
+                    }
+                }
             }
+        } else {
+            // no biometrics
         }
     }
 }
