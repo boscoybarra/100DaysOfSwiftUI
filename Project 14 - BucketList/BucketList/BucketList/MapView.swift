@@ -9,10 +9,35 @@
 import MapKit
 import SwiftUI
 
-//That creates a new typealias – a type name – called “Context”, and wherever Swift sees Context in code it will consider it the same as UIViewRepresentableContext<Self>, where Self is whatever type we’re working with. In practical terms, this means we can just write Context rather than UIViewRepresentableContext<MapView>, and they mean exactly the same thing.
-
 struct MapView: UIViewRepresentable {
-//  Just like working with UIImagePickerController, this means creating a nested class that inherits from NSObject, making it conform to whatever delegate protocol our view or view controller works with, and giving it a reference to the parent struct so it can pass data back up to SwiftUI.
+    
+    @Binding var centerCoordinate: CLLocationCoordinate2D
+    
+//  Things start off straightforward: we’re going to add two properties to our MapView that track whether we should show place details or not, and what place was actually selected. These will form another bridge between MKMapView and SwiftUI, so we’re going to mark them with @Binding.
+
+//Add these two properties now:
+    
+    @Binding var selectedPlace: MKPointAnnotation?
+    @Binding var showingPlaceDetails: Bool
+    var annotations: [MKPointAnnotation]
+    
+    
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView()
+        mapView.delegate = context.coordinator
+        return mapView
+    }
+
+    func updateUIView(_ view: MKMapView, context: Context) {
+        if annotations.count != view.annotations.count {
+            view.removeAnnotations(view.annotations)
+            view.addAnnotations(annotations)
+        }
+    }
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: MapView
 
@@ -21,40 +46,60 @@ struct MapView: UIViewRepresentable {
         }
         
         func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-            print(mapView.centerCoordinate)
+            parent.centerCoordinate = mapView.centerCoordinate
         }
         
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
-            view.canShowCallout = true
-            return view
+            // this is our unique identifier for view reuse
+            let identifier = "Placemark"
+
+            // attempt to find a cell we can recycle
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+            if annotationView == nil {
+                // we didn't find one; make a new one
+                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+
+                // allow this to show pop up information
+                annotationView?.canShowCallout = true
+
+                // attach an information button to the view
+                annotationView?.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            } else {
+                // we have a view to reuse, so give it the new annotation
+                annotationView?.annotation = annotation
+            }
+
+            // whether it's a new view or a recycled one, send it back
+            return annotationView
         }
-    }
-    
-//  Just as with the UIViewControllerRepresentable protocol, that means adding a method called makeCoordinator() that sends back a configured instance of our Coordinator. This should be added to the MapView struct, and it will send itself to the coordinator so it can report back what’s happening.
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIView(context: Context) -> MKMapView {
-        let mapView = MKMapView()
-//  Remember, our coordinator is the delegate of the map view, which means when something interesting happens it gets notified – when the map moves, when it starts and finishes loading, when the user was located on the map, when a map pin was touched, and so on.
-        mapView.delegate = context.coordinator
-        let annotation = MKPointAnnotation()
-        annotation.title = "London"
-        annotation.subtitle = "Capital of England"
-        annotation.coordinate = CLLocationCoordinate2D(latitude: 51.5, longitude: 0.13)
-        mapView.addAnnotation(annotation)
+        
+//  This method, the important part of which is called calloutAccessoryControlTapped, gets called when the button is tapped, and it’s down to us to decide what should happen. In this instance, we’re going to start by checking we have an MKAnnotationView, and if so use that to set the selectedPlace property of the parent MapView. We can then also set showingPlaceDetails to true, which will in turn trigger the alert in ContentView – it’s another chain, this time connecting map pin taps to our alert.
+        
+        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+            guard let placemark = view.annotation as? MKPointAnnotation else { return }
 
-        return mapView
-    }
-
-    func updateUIView(_ view: MKMapView, context: Context) {
+            parent.selectedPlace = placemark
+            parent.showingPlaceDetails = true
+        }
     }
 }
 
+extension MKPointAnnotation {
+    static var example: MKPointAnnotation {
+        let annotation = MKPointAnnotation()
+        annotation.title = "London"
+        annotation.subtitle = "Home to the 2012 Summer Olympics."
+        annotation.coordinate = CLLocationCoordinate2D(latitude: 51.5, longitude: -0.13)
+        return annotation
+    }
+}
+
+//That will immediately break the MapView_Previews struct, because it needs to provide a binding. This preview isn’t really useful because MKMapView doesn’t work outside of the simulator, so I wouldn’t blame you if you just deleted it. However, if you really want to make it work you should add some example data to MKPointAnnotation so that it’s easy to reference:
+
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView()
+        MapView(centerCoordinate: .constant(MKPointAnnotation.example.coordinate), selectedPlace: .constant(MKPointAnnotation.example), showingPlaceDetails: .constant(false), annotations: [MKPointAnnotation.example])
+
     }
 }
