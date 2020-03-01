@@ -239,3 +239,54 @@ struct ContentView: View {
         }
     }
 }
+
+
+//KEY Learnings
+
+//The Comparable protocol requires that we tell Swift whether one object should be sorted before another of the same type.
+//This is its only requirement.
+
+//iOS can take care of file encryption for using the .completeFileProtection option.
+//This stops anyone from reading the file unless the device has been unlocked.
+
+//When Face ID authentication completes iOS will run a closure of our choosing on the PRIVATE thread NOT THE MAIN THREAD.
+
+//Coordinator classes help us respond to actions in a UIView or UIViewController.
+//We can use them as delegates for those objects.
+
+//UIViewRepresentable and UIViewControllerRepresentable are NOT the same.
+//The first handles UIView and the second handles UIViewController; you shouldn't mix them up.
+
+// If a type conforms to Comparable we get a version of sorted() that takes no parameters.
+//Without Comparable we need to provide a sorting closure.
+
+//Writing data atomically means that iOS writes to a temporary file then performs a rename.
+//This stops another piece of code from reading the file part-way through a write.
+
+//SwiftUI will only call updateUIView() when something has changed.
+
+//Swift's strings and integers already conform to Comparable.
+//This means Swift can sort arrays of strings and integers natively.
+
+//Every iOS app has a documents directory where we can store our files.
+//This directory is automatically stored in iCloud backups.
+
+//We can detect when a sheet is closed by setting its onDismiss parameter.
+
+//The CL in CLLocationCoordinate2D stands for Core Location.
+//Core Location is separate from MapKit, and allows us to do things like read the user's location.
+
+//CLLocationCoordinate2D does not conforms to Codable.
+//This class does not conform to Codable, so you need to add it by hand.
+
+//SwiftUI does not let us bind a text field directly to an optional string property.
+//We can however bind a computed property that wraps the optional.
+
+// If you make a data task and it never starts, you probably forgot to call resume() on it.
+//You should calls resume() on a data task when you want it to start.
+
+//Reusing map annotation views helps improve performance.
+//iOS just changes the text rather than destroying and recreating views each time.
+
+//if our app gets deleted, its documents directory will NOT still remain on the device.
+//The documents directory is attached to the app, so when the app goes so does its documents.
