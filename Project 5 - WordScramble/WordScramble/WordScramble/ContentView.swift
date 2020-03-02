@@ -31,9 +31,19 @@ struct ContentView: View {
 
 //To read when return is pressed for a text view we should add an onCommit() modifier.
                 TextField("Enter your word", text: $newWord, onCommit: addNewWord)
-                List(usedWords, id: \.self) {
-                    Image(systemName: "\($0.count).circle")
-                    Text($0)
+//                Without accessibility
+//                List(usedWords, id: \.self) {
+//                    Image(systemName: "\($0.count).circle")
+//                    Text($0)
+//                }
+//                With accessibility:
+                List(usedWords, id: \.self) { word in
+                    HStack {
+                        Image(systemName: "\(word.count).circle")
+                        Text(word)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibility(label: Text("\(word), \(word.count) letters"))
                 }
                 
                 Text("Total Score")
