@@ -28,6 +28,9 @@ struct MissionView: View {
                         .scaledToFit()
                         .frame(maxWidth: geometry.size.width * 0.7)
                         .padding(.top)
+                        .accessibility(label: Text(self.mission.displayName + "batch mission"))
+                        .accessibility(removeTraits: .isImage)
+                    
                     
                     
                     Text(self.mission.formattedLaunchDate)
@@ -45,6 +48,7 @@ struct MissionView: View {
                                     .frame(width: 60, height: 60)
                                     .clipShape(Circle())
                                     .overlay(Capsule().stroke(Color.primary, lineWidth: 1))
+                                    .accessibility(addTraits: .isButton)
 
                                 VStack(alignment: .leading) {
                                     Text(crewMember.astronaut.name)
