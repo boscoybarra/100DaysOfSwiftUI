@@ -34,6 +34,13 @@ struct RatingView: View {
                     .onTapGesture {
                         self.rating = number
                     }
+//                    RatingView is designed to be reusable – it’s the kind of thing you can take from this project and use in a dozen other projects
+                .accessibility(label: Text("\(number == 1 ? "1 star" : "\(number) stars")"))
+//                    Second, we can remove the .isImage trait, because it really doesn’t matter that these are images:
+                .accessibility(removeTraits: .isImage)
+//                    And finally, we should tell the system that each star is actually a button, so users know it can be tapped. While we’re here, we can make VoiceOver do an even better job by adding a second trait, .isSelected, if the star is already highlighted.
+                .accessibility(addTraits: number > self.rating ? .isButton : [.isButton, .isSelected])
+
             }
         }
     }
