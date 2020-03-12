@@ -69,3 +69,156 @@ Text("Tab 2")
 //Of course, just using 0 and 1 isn’t ideal – those values are fixed and so it solves the problem of views being moved around, but they aren’t easy to remember. Fortunately, you can use strings instead: give each view a string tag that is unique and reflects its purpose, then use that for your @State property. This is much easier to work with in the long term, and is recommended over integers.
 
 //Tip: It’s common to want to use NavigationView and TabView at the same time, but you should be careful: TabView should be the parent view, with the tabs inside it having a NavigationView as necessary, rather than the other way around.
+
+
+struct ContentView: View {
+    
+    @State private var selectedTab = 0
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            Text("Tab 1")
+            .onTapGesture {
+                self.selectedTab = 1
+            }
+            .tabItem {
+                Image(systemName: "star")
+                Text("One")
+            }
+            .tag(0)
+
+            Text("Tab 2")
+            .tabItem {
+                Image(systemName: "star.fill")
+                Text("Two")
+            }
+            .tag(1)
+        }
+    }
+}
+
+
+
+
+//Swift’s Result type is designed to solve the problem when you know thing A might be true or thing B might be true, but exactly one can be true at any given time. If you imagine those as Boolean properties, then each has two states (true and false), but together they have four states:
+//
+//A is false and B is false
+//A is true and B is false
+//A is false and B is true
+//A is true and B is true
+//If you know for sure that options 1 and 4 are never possible – that either A or B must be true but they can’t both be true – then you can immediately halve the complexity of your logic.
+
+
+//There is one small complexity here, and although I’ve mentioned it briefly before now it becomes important. When we pass a closure into a function, Swift needs to know whether it will be used immediately or whether it might be used later on. If it’s used immediately – the default – then Swift is happy to just run the closure. But if it’s used later on, then it’s possible whatever created the closure has been destroyed and no longer exists in memory, in which case the closure would also be destroyed and can no longer be run.
+
+//To fix this, Swift lets us mark closure parameters as @escaping, which means “this closure might be used outside of the current run of this method, so please keep its memory alive until we’re done.”
+
+
+//Understanding Swift’s Result type
+
+enum NetworkError: Error {
+    case badURL, requestFailed, unknown
+}
+
+struct ContentView: View {
+
+    var body: some View {
+        Text("Hello, World!")
+        .onAppear {
+            self.fetchData(from: "https://www.apple.com") { result in
+                switch result {
+                case .success(let str):
+                    print(str)
+                case .failure(let error):
+                    switch error {
+                    case .badURL:
+                        print("Bad URL")
+                    case .requestFailed:
+                        print("Network problems")
+                    case .unknown:
+                        print("Unknown error")
+                    }
+                }
+            }
+        }
+    }
+    
+    func fetchData(from urlString: String, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        // check the URL is OK, otherwise return with a failure
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.badURL))
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            // the task has completed – push our work back to the main thread
+            DispatchQueue.main.async {
+                if let data = data {
+                    // success: convert the data to a string and send it back
+                    let stringData = String(decoding: data, as: UTF8.self)
+                    completion(.success(stringData))
+                } else if error != nil {
+                    // any sort of network failure
+                    completion(.failure(.requestFailed))
+                } else {
+                    // this ought not to be possible, yet here we are
+                    completion(.failure(.unknown))
+                }
+            }
+        }.resume()
+    }
+}
+
+
+//Manually publishing ObservableObject changes
+
+//DispatchQueue.main.async() as a way of pushing work to the main thread, but here we’re going to use a similar method called DispatchQueue.main.asyncAfter(). This lets us specify when the attached closure should be run, which means we can say “do this work after 1 second” rather than “do this work now.”
+
+
+class DelayedUpdater: ObservableObject {
+//    if you remove the @Published property wrapper you’ll see the UI no longer changes. Behind the scenes all the asyncAfter() work is still happening, but it doesn’t cause the UI to refresh any more because no change notifications are being sent out.
+//    @Published var value = 0
+    
+    var value = 0 {
+        willSet {
+//            by sending the change notifications manually using the objectWillChange property I mentioned earlier. This lets us send the change notification whenever we want, rather than relying on @Published to do it automatically.
+            objectWillChange.send()
+        }
+    }
+    
+//    Now you’ll get the old behavior back again – the UI will count to 10 as before. Except this time we have the opportunity to add extra functionality inside that willSet observer. Perhaps you want to log something, perhaps you want to call another method, or perhaps you want to clamp the integer inside value so it never goes outside of a range – it’s all under our control now.
+    
+
+    init() {
+        for i in 1...10 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
+                self.value += 1
+            }
+        }
+    }
+}
+
+
+struct ContentView: View {
+    @ObservedObject var updater = DelayedUpdater()
+
+    var body: some View {
+        Text("Value is: \(updater.value)")
+    }
+}
+
+//Controlling image interpolation in SwiftUI
+
+struct ContentView: View {
+
+    var body: some View {
+        Image("example")
+//            SwiftUI gives us the interpolation() modifier that lets us control how pixel blending is applied./
+        .interpolation(.none)
+        .resizable()
+        .scaledToFit()
+        .frame(maxHeight: .infinity)
+        .background(Color.black)
+        .edgesIgnoringSafeArea(.all)
+    }
+}
