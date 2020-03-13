@@ -222,3 +222,91 @@ struct ContentView: View {
         .edgesIgnoringSafeArea(.all)
     }
 }
+
+
+//Creating context menus
+
+struct ContentView: View {
+    @State private var backgroundColor = Color.red
+
+    var body: some View {
+        VStack {
+            Text("Hello, World!")
+                .padding()
+                .background(backgroundColor)
+
+            Text("Change Color")
+                .padding()
+//             SwiftUI lets us attach context menus to objects to provide this extra functionality, all done using the contextMenu() modifier.
+                .contextMenu {
+                    Button(action: {
+                        self.backgroundColor = .red
+                    }) {
+                        Text("Red")
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.red)
+                    }
+
+                    Button(action: {
+                        self.backgroundColor = .green
+                    }) {
+                        Text("Green")
+                    }
+
+                    Button(action: {
+                        self.backgroundColor = .blue
+                    }) {
+                        Text("Blue")
+                    }
+                }
+        }
+    }
+}
+
+
+//Scheduling local notifications
+
+struct ContentView: View {
+
+    var body: some View {
+        VStack {
+            Button("Request Permission") {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    if success {
+                        print("All set!")
+                    } else if let error = error {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+
+            Button("Schedule Notification") {
+               let content = UNMutableNotificationContent()
+                content.title = "Feed the cat"
+                content.subtitle = "It looks hungry"
+                content.sound = UNNotificationSound.default
+
+                // show this notification five seconds from now
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+                // choose a random identifier
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+                // add our notification request
+                UNUserNotificationCenter.current().add(request)
+            }
+        }
+    }
+}
+
+//Adding Swift package dependencies in Xcode
+
+
+//The reason this is possible is because most developers have agreed a system of semantic versioning (SemVer) for their code. If you look at a version like 1.5.3, then the 1 is considered the major number, the 5 is considered the minor number, and the 3 is considered the patch number. If developers follow SemVer correctly, then they should:
+
+//Change the patch number when fixing a bug as long as it doesn’t break any APIs or add features.
+//Change the minor number when they added features that don’t break any APIs.
+//Change the major number when they do break APIs.
+
+
+
