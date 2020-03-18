@@ -26,17 +26,40 @@ class Prospect: Identifiable, Codable {
 
 
 class Prospects: ObservableObject {
+    static let saveKey = "SavedData"
 //     if we add or remove items from that array a change notification will be sent out. However, if we quietly change an item inside the array then SwiftUI won’t detect that change, and no views will be refreshed.
-    @Published var people: [Prospect]
+    
+//    Even better, we can use access control to stop external writes to the people array, meaning that our views must use the add() method to add prospects. This is done by changing the definition of the people property to this:
+    @Published private(set) var people: [Prospect]
 
     init() {
+//       Adding userDefaults
+        if let data = UserDefaults.standard.data(forKey: Self.saveKey) {
+            if let decoded = try? JSONDecoder().decode([Prospect].self, from: data) {
+                self.people = decoded
+                return
+            }
+        }
+
         self.people = []
     }
     
-//    To fix this, we need to tell SwiftUI by hand that something important has changed. So, rather than flipping a Boolean in ProspectsView, we are instead going to call a method on the Prospects class to flip that same Boolean while also sending a change notification out.
+//    To fix this, we need to tell SwiftUI by hand that something important has changed. So, rather than flipping a Boolean in ProspectsView, we are instead going to call a method on the Prospects class to flip that same Boolean while also sending a change notification out.    
     func toggle(_ prospect: Prospect) {
-//        Important: You should call objectWillChange.send() before changing your property, to ensure SwiftUI gets its animations correct.
+        //        Important: You should call objectWillChange.send() before changing your property, to ensure SwiftUI gets its animations correct.
         objectWillChange.send()
         prospect.isContacted.toggle()
+        save()
+    }
+    
+    private func save() {
+        if let encoded = try? JSONEncoder().encode(people) {
+            UserDefaults.standard.set(encoded, forKey: Self.saveKey)
+        }
+    }
+    
+    func add(_ prospect: Prospect) {
+        people.append(prospect)
+        save()
     }
 }
