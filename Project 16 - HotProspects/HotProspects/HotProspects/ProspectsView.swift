@@ -15,9 +15,16 @@ struct ProspectsView: View {
 //    Third  now we want all instances of ProspectsView to read that object back out of the environment when they are created. This uses a new @EnvironmentObject property wrapper that does all the work of finding the object, attaching it to a property, and keeping it up to date over time. So, the final step is just adding this property to ProspectsView:
     @EnvironmentObject var prospects: Prospects
     @State private var isShowingScanner = false
+    @State private var isShowingSort = false
+    
+    @State private var sort: SortProspects = .name
     
     enum FilterType {
         case none, contacted, uncontacted
+    }
+    
+    enum SortProspects {
+        case name, date
     }
     
     let filter: FilterType
@@ -46,15 +53,39 @@ struct ProspectsView: View {
         }
     }
     
+    var sortProspects: [Prospect] {
+        switch sort {
+        case .name:
+            return filteredProspects.sorted(by: { $0.name < $1.name })
+        case .date:
+            return filteredProspects.sorted(by: { $0.dateAdded < $1.dateAdded })
+        }
+    }
+
+    
     var body: some View {
         NavigationView {
             List {
                 ForEach(filteredProspects) { prospect in
                     VStack(alignment: .leading) {
-                        Text(prospect.name)
-                            .font(.headline)
+                        HStack {
+                            if self.filter == .none {
+                                if prospect.isContacted {
+                                    Image(systemName: "person.crop.circle.badge.checkmark" )
+                                        .foregroundColor(.green)
+                                    
+                                } else {
+                                    Image(systemName: "person.crop.circle.badge.xmark" )
+                                        .foregroundColor(.red)
+                                }
+                            }
+                            Text(prospect.name)
+                                .font(.headline)
+                        }
                         Text(prospect.emailAddress)
                             .foregroundColor(.secondary)
+                    
+                        
                     }.contextMenu {
                         Button(prospect.isContacted ? "Mark Uncontacted" : "Mark Contacted" ) {
 //                            prospect.isContacted.toggle()
@@ -72,14 +103,25 @@ struct ProspectsView: View {
                 .navigationBarItems(trailing: Button(action: {
                     self.isShowingScanner = true
                 }) {
+                    Image(systemName: "arrow.up.arrow.down.square")
+                },
+                trailing: Button(action: {
+                    self.isShowingScanner = true
+                }) {
                     Image(systemName: "qrcode.viewfinder")
                     Text("Scan")
                 })
+                .actionSheet(isPresented: $isShowingSort) {
+                    ActionSheet(title: Text("Sort by"), buttons: [
+                        .default(Text("Name")) {self.sort = .name},
+                        .default(Text("Most Recent")) {self.sort = .date}
+                    ])
+                }
                 .sheet(isPresented: $isShowingScanner) {
                     CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: self.handleScan)
                 }
+            }
         }
-    }
     
     func handleScan(result: Result<String, CodeScannerView.ScanError>) {
        self.isShowingScanner = false
