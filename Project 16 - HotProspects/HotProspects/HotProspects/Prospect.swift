@@ -34,15 +34,20 @@ class Prospects: ObservableObject {
     @Published private(set) var people: [Prospect]
 
     init() {
-//       Adding userDefaults
-        if let data = UserDefaults.standard.data(forKey: Self.saveKey) {
-            if let decoded = try? JSONDecoder().decode([Prospect].self, from: data) {
-                self.people = decoded
-                return
-            }
-        }
+        
+        // Use JSON and the documents directory for saving and loading our user data. See Extension on FileManager
+        self.people = FileManager.default.readDocument(from: Self.saveKey) ?? []
 
-        self.people = []
+        
+//       Using userDefaults option:
+//        if let data = UserDefaults.standard.data(forKey: Self.saveKey) {
+//            if let decoded = try? JSONDecoder().decode([Prospect].self, from: data) {
+//                self.people = decoded
+//                return
+//            }
+//        }
+//
+//        self.people = []
     }
     
 //    To fix this, we need to tell SwiftUI by hand that something important has changed. So, rather than flipping a Boolean in ProspectsView, we are instead going to call a method on the Prospects class to flip that same Boolean while also sending a change notification out.    

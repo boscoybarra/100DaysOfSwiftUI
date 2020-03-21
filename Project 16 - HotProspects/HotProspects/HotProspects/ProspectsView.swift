@@ -17,7 +17,7 @@ struct ProspectsView: View {
     @State private var isShowingScanner = false
     @State private var isShowingSort = false
     
-    @State private var sort: SortProspects = .name
+    @State private var sortInfo: SortProspects = .name
     
     enum FilterType {
         case none, contacted, uncontacted
@@ -54,7 +54,7 @@ struct ProspectsView: View {
     }
     
     var sortProspects: [Prospect] {
-        switch sort {
+        switch sortInfo {
         case .name:
             return filteredProspects.sorted(by: { $0.name < $1.name })
         case .date:
@@ -100,28 +100,29 @@ struct ProspectsView: View {
                 }
             }
                 .navigationBarTitle(title)
-                .navigationBarItems(trailing: Button(action: {
-                    self.isShowingScanner = true
-                }) {
-                    Image(systemName: "arrow.up.arrow.down.square")
-                },
-                trailing: Button(action: {
-                    self.isShowingScanner = true
-                }) {
-                    Image(systemName: "qrcode.viewfinder")
-                    Text("Scan")
+                .navigationBarItems(
+                    leading: Button(action: {
+                        self.isShowingSort = true
+                    }) {
+                        Image(systemName: "arrow.up.arrow.down.square")
+                    },
+                    trailing: Button(action: {
+                        self.isShowingScanner = true
+                    }) {
+                        Image(systemName: "qrcode.viewfinder")
+                        Text("Scan")
                 })
                 .actionSheet(isPresented: $isShowingSort) {
                     ActionSheet(title: Text("Sort by"), buttons: [
-                        .default(Text("Name")) {self.sort = .name},
-                        .default(Text("Most Recent")) {self.sort = .date}
+                        .default(Text("Name")) {self.sortInfo = .name},
+                        .default(Text("Most Recent")) {self.sortInfo = .date}
                     ])
                 }
                 .sheet(isPresented: $isShowingScanner) {
                     CodeScannerView(codeTypes: [.qr], simulatedData: "Paul Hudson\npaul@hackingwithswift.com", completion: self.handleScan)
-                }
             }
         }
+    }
     
     func handleScan(result: Result<String, CodeScannerView.ScanError>) {
        self.isShowingScanner = false
