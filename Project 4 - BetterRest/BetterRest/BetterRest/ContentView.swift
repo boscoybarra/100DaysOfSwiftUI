@@ -39,14 +39,16 @@ struct ContentView: View {
                         Section(header: Text("Caffeine ☕️")) {
                             Text("Daily coffee intake")
                                 .font(.headline)
-                            Picker(selection: $coffeeAmount, label: Text("Cups")) {
-                                ForEach(0 ..< 21, id: \.self) {
-                                    Text("\($0) cup\($0 == 1 ? "" : "s")")
+                            Stepper(value: $coffeeAmount, in: 0...20) {
+                                if coffeeAmount == 1 {
+                                    Text("1 cup")
+                                } else {
+                                    Text("\(coffeeAmount) cups")
                                 }
                                 } .labelsHidden()
                                 .pickerStyle(WheelPickerStyle())
                         }
-                    }
+                    }.accessibility(value: Text("\(coffeeAmount) \(coffeeAmount == 1 ? "cup" : "cups")"))
 
                     Text("Your ideal 🛌 is")
                     .font(.caption)

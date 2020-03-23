@@ -183,3 +183,148 @@ struct ContentView: View {
     }
 }
 
+// Triggering events repeatedly using a timer
+
+
+struct ContentView: View {
+    //1. It asks the timer to fire every 1 second.
+    //2. It says the timer should run on the main thread.
+    //3. It says the timer should run on the common run loop, which is the one you’ll want to use most of the time. (Run loops lets iOS handle running code while the user is actively doing something, such as scrolling in a list.)
+    //4. It connects the timer immediately, which means it will start counting time.
+    //5. It assigns the whole thing to the timer constant so that it stays alive.
+
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+//  Before we’re done, there’s one more important timer concept I want to show you: if you’re OK with your timer having a little float, you can specify some tolerance. This allows iOS to perform important energy optimization, because it can fire the timer at any point between its scheduled fire time and its scheduled fire time plus the tolerance you specify. In practice this means the system can perform timer coalescing: it can push back your timer just a little so that it fires at the same time as one or more other timers, which means it can keep the CPU idling more and save battery power.
+    
+//  let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
+    
+    @State private var counter = 0
+
+    var body: some View {
+        Text("Hello, World!")
+            //            we need to catch the announcements by hand using a new modifier called onReceive(). This accepts a publisher as its first parameter and a function to run as its second, and it will make sure that function is called whenever the publisher sends its change notification.
+            .onReceive(timer) { time in
+                if self.counter == 5 {
+                    //       Stop timer
+                    self.timer.upstream.connect().cancel()
+                } else {
+                    print("The time is now \(time)")
+                }
+
+                self.counter += 1
+            }
+    }
+}
+
+//How to be notified when your SwiftUI app moves to the background
+
+struct ContentView: View {
+
+    var body: some View {
+        Text("Hello, World!")
+//      when we move app to the background and stop diplaying on the screen
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            print("Moving to the background!")
+        }
+//        user has re-activated your app and is your chance to continue any important work:
+        
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            print("Moving back to the foreground!")
+        }
+//        You can even detect when the user took a screenshot, using userDidTakeScreenshotNotification
+        
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)) { _ in
+            print("User took a screenshot!")
+        }
+    }
+    
+//    Note
+//There are so many of these that I can’t realistically list them all here, so instead here are two more to try out:
+
+//UIApplication.significantTimeChangeNotification is called when the user changes their clock or when daylight savings time changes.
+//UIResponder.keyboardDidShowNotification is called when the keyboard is shown.
+//Each of these notifications works in exactly the same way: use onReceive() to catch notifications from the publisher, then take whatever action you want.
+}
+
+//Supporting specific accessibility needs with SwiftUI
+
+struct ContentView: View {
+//    That will be either true or false, and you can adapt your UI accordingly. For example, in the code below we use a simple green background for the regular layout, but when Differentiate Without Color is enabled we use a black background and add a checkmark instead:
+    @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
+    var body: some View {
+        HStack {
+            if differentiateWithoutColor {
+                Image(systemName: "checkmark.circle")
+            }
+
+            Text("Success")
+        }
+        .padding()
+        .background(differentiateWithoutColor ? Color.black : Color.green)
+        .foregroundColor(Color.white)
+        .clipShape(Capsule())
+    }
+}
+
+//Another common option is Reduce Motion, which again is available in the simulator under Accessibility > Motion > Reduce Motion. When this is enabled, apps should should limit the amount of animation that causes movement on screen. For example, the iOS app switcher makes views fade in and out rather than scale up and down.
+
+//With SwiftUI, this means we should restrict the use of withAnimation() when it involves movement, like this:
+
+struct ContentView: View {
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State private var scale: CGFloat = 1
+
+    var body: some View {
+        Text("Hello, World!")
+            .scaleEffect(scale)
+            .onTapGesture {
+                if self.reduceMotion {
+                    self.scale *= 1.5
+                } else {
+                    withAnimation {
+                        self.scale *= 1.5
+                    }
+                }
+            }
+    }
+    
+    func withOptionalAnimation<Result>(_ animation: Animation? = .default, _ body: () throws -> Result) rethrows -> Result {
+        if UIAccessibility.isReduceMotionEnabled {
+            return try body()
+        } else {
+            return try withAnimation(animation, body)
+        }
+    }
+}
+
+//So, when Reduce Motion Enabled is true the closure code that’s passed in is executed immediately, otherwise it’s passed along using withAnimation(). The whole throws/rethrows thing is more advanced Swift, but it’s a direct copy of the function signature for withAnimation() so that the two can be used interchangeably.
+
+struct ContentView: View {
+    @State private var scale: CGFloat = 1
+
+    var body: some View {
+        Text("Hello, World!")
+            .scaleEffect(scale)
+            .onTapGesture {
+                withOptionalAnimation {
+                    self.scale *= 1.5
+                }
+            }
+    }
+}
+
+//One last option you should consider supporting is Reduce Transparency, and when that’s enabled apps should reduce the amount of blur and translucency used in their designs to make doubly sure everything is clear.
+
+//For example, this code uses a solid black background when Reduce Transparency is enabled, otherwise using 50% transparency:
+
+struct ContentView: View {
+    @Environment(\.accessibilityReduceTransparency) var reduceTransparency
+    var body: some View {
+        Text("Hello, World!")
+            .padding()
+            .background(reduceTransparency ? Color.black : Color.black.opacity(0.5))
+            .foregroundColor(Color.white)
+            .clipShape(Capsule())
+    }
+}
