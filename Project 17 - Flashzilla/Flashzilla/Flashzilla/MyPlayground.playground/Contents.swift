@@ -328,3 +328,6 @@ struct ContentView: View {
             .clipShape(Capsule())
     }
 }
+
+
+//Designing a single card view
