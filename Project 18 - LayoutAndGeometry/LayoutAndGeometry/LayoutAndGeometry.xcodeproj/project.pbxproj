@@ -24,6 +24,7 @@
 		69109042242FE95400B02E08 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		69109045242FE95400B02E08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69109047242FE95400B02E08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		69A1C1EE2430F7F6008DE8F3 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +60,7 @@
 				69109039242FE95300B02E08 /* AppDelegate.swift */,
 				6910903B242FE95300B02E08 /* SceneDelegate.swift */,
 				6910903D242FE95300B02E08 /* ContentView.swift */,
+				69A1C1EE2430F7F6008DE8F3 /* MyPlayground.playground */,
 				6910903F242FE95400B02E08 /* Assets.xcassets */,
 				69109044242FE95400B02E08 /* LaunchScreen.storyboard */,
 				69109047242FE95400B02E08 /* Info.plist */,
