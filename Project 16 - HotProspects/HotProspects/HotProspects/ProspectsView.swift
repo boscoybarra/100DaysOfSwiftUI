@@ -12,7 +12,7 @@ import UserNotifications
 
 struct ProspectsView: View {
     
-//    Third  now we want all instances of ProspectsView to read that object back out of the environment when they are created. This uses a new @EnvironmentObject property wrapper that does all the work of finding the object, attaching it to a property, and keeping it up to date over time. So, the final step is just adding this property to ProspectsView:
+//  Third  now we want all instances of ProspectsView to read that object back out of the environment when they are created. This uses a new @EnvironmentObject property wrapper that does all the work of finding the object, attaching it to a property, and keeping it up to date over time. So, the final step is just adding this property to ProspectsView:
     @EnvironmentObject var prospects: Prospects
     @State private var isShowingScanner = false
     @State private var isShowingSort = false
