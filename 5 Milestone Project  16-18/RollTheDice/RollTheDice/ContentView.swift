@@ -9,24 +9,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    var scores = UserScore()
     
 //    First, we need to add a property to ContentView that creates and stores a single instance of the Prospects class:
-    var dices = Dices()
     
     var body: some View {
         TabView {
-            DiceView(filter: .rollDice)
+            RollDiceView()
                 .tabItem {
                     Image(systemName: "square")
                     Text("Roll Dice")
                 }
-            DiceView(filter: .games)
+            HistoryDiceRolls()
                 .tabItem {
                     Image(systemName: "gamecontroller")
                     Text("Games")
                 }
-        }.environmentObject(dices)
-//        Second, we need to post that property into the SwiftUI environment, so that all child views can access it. Because tabs are considered children of the tab view they are inside, if we add it to the environment for the TabView then all our ProspectsView instances will get that object.
+        }.environmentObject(scores)
     }
 }
 
