@@ -11,6 +11,9 @@ import SwiftUI
 struct ResortView: View {
     let resort: Resort
     
+    @State private var selectedFacility: Facility?
+    @EnvironmentObject var favorites: Favorites
+    
     @Environment(\.horizontalSizeClass) var sizeClass
 
     var body: some View {
@@ -45,15 +48,40 @@ struct ResortView: View {
                     Text("Facilities")
                         .font(.headline)
 
-                    Text(ListFormatter.localizedString(byJoining: resort.facilities))
+                    HStack {
+                        ForEach(resort.facilityTypes) { facility in
+                            facility.icon
+                                .font(.title)
+                                .onTapGesture {
+                                    self.selectedFacility = facility
+                                }
+                        }
+                    }
                     .padding(.vertical)
-                        .padding(.vertical)
                 }
                 .padding(.horizontal)
             }
+            
+            Button(favorites.contains(resort) ? "Remove from Favorites" : "Add to Favorites") {
+                if self.favorites.contains(self.resort) {
+                    self.favorites.remove(self.resort)
+                } else {
+                    self.favorites.add(self.resort)
+                }
+            }
+            .padding()
+        }
+            
+        .alert(item: $selectedFacility) { facility in
+            facility.alert
         }
         .navigationBarTitle(Text("\(resort.name), \(resort.country)"), displayMode: .inline)
+        
     }
+}
+
+extension String: Identifiable {
+    public var id: String { self }
 }
 
 struct ResortView_Previews: PreviewProvider {
